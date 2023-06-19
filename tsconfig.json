@@ -2,7 +2,9 @@
   "compilerOptions": {
     "incremental": true,
     "outDir": "dist",
-    "rootDirs": ["src"],
+    "rootDirs": [
+      "src"
+    ],
     "target": "es2021",
     "sourceMap": false,
     "skipLibCheck": true,
@@ -10,9 +12,12 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": [
+        "*"
+      ]
     },
     "strict": true,
     "noImplicitOverride": true,
@@ -20,5 +25,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
