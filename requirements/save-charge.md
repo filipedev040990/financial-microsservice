@@ -47,7 +47,6 @@
   email: string
   document: string
   birthDate: Date
-  status: string (customer | cliente)
   phoneNumber: string
   createdAt: Date
   updatedAt?: Date

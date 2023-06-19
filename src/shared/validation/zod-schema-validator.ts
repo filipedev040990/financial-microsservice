@@ -11,8 +11,7 @@ export class ZodSchemaValidator implements SchemaValidatorInterface <ZodSchema> 
       }
     }
     return {
-      success: true,
-      error: false
+      success: true
     }
   }
 }
