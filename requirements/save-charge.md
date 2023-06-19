@@ -67,6 +67,8 @@
   neighborhood: string
   city: string
   state: string
+  createdAt: Date
+  updatedAt?: Date
 }
 
 ## Objeto creditCard
