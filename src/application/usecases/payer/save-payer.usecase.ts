@@ -1,6 +1,6 @@
-import { SavePayerRepositoryInterface } from '../contratcs/payer-repository.interface'
-import { SavePayerUseCaseInterface } from '../contratcs/save-payer-usecase.interface'
-import { UUIDGeneratorInterface } from '../contratcs/uuid-generator.interface'
+import { SavePayerRepositoryInterface } from '@/application/contratcs/payer-repository.interface'
+import { SavePayerUseCaseInterface } from '@/application/contratcs/save-payer-usecase.interface'
+import { UUIDGeneratorInterface } from '@/application/contratcs/uuid-generator.interface'
 
 export class SavePayerUseCase implements SavePayerUseCaseInterface {
   constructor (

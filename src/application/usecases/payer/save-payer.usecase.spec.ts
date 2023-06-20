@@ -1,7 +1,7 @@
-import { UUIDGeneratorInterface } from '../contratcs/uuid-generator.interface'
+import { UUIDGeneratorInterface } from '../../contratcs/uuid-generator.interface'
 import { SavePayerUseCase } from './save-payer.usecase'
-import { SavePayerUseCaseInterface } from '../contratcs/save-payer-usecase.interface'
-import { SavePayerRepositoryInterface } from '../contratcs/payer-repository.interface'
+import { SavePayerUseCaseInterface } from '../../contratcs/save-payer-usecase.interface'
+import { SavePayerRepositoryInterface } from '../../contratcs/payer-repository.interface'
 import { mock } from 'jest-mock-extended'
 import MockDate from 'mockdate'
 

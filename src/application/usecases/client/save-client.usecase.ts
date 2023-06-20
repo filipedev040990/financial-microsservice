@@ -1,6 +1,6 @@
-import { SaveClientRepositoryInterface } from '../contratcs/client-repository.interface'
-import { SaveClientUseCaseInterface } from '../contratcs/save-client-usecase.interface'
-import { UUIDGeneratorInterface } from '../contratcs/uuid-generator.interface'
+import { SaveClientRepositoryInterface } from '@/application/contratcs/client-repository.interface'
+import { SaveClientUseCaseInterface } from '@/application/contratcs/save-client-usecase.interface'
+import { UUIDGeneratorInterface } from '@/application/contratcs/uuid-generator.interface'
 
 export class SaveClientUseCase implements SaveClientUseCaseInterface {
   constructor (
