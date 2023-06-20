@@ -3,7 +3,7 @@
 > ## Caso de sucesso
 
 1. ✅ Salva os dados do cliente
-2. ⛔ Salva os dados do pagador
+2. ✅ Salva os dados do pagador
 3. ⛔ Salva os dados do cartão de crédito
 4. ⛔ Salva os dados da cobrança
 5. ⛔ Registra trace da charge
