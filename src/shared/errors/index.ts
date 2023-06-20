@@ -12,6 +12,13 @@ export class MissingParamError extends Error {
   }
 }
 
+export class SchemaValidationError extends Error {
+  constructor (error: any) {
+    super(error)
+    this.name = 'SchemaValidationError'
+  }
+}
+
 export class ServerError extends Error {
   constructor (error?: Error) {
     super('Internal server error')

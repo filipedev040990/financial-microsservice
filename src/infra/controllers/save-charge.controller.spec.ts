@@ -7,7 +7,7 @@ import { SaveChargeUseCaseInterface } from '@/application/contratcs/save-charge-
 import { SchemaValidatorInterface } from '@/application/contratcs/schema-validator.interface'
 import { mock } from 'jest-mock-extended'
 import { chargeSchema } from '../schemas/charge.schema'
-import { InvalidParamError } from '@/shared/errors'
+import { SchemaValidationError } from '@/shared/errors'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
 import { SendEncryptedCardDataToPciSecurityServiceInterface } from '@/application/contratcs/send-encrypted-card-usecase.interface'
@@ -101,7 +101,7 @@ describe('SaveChargeController', () => {
 
     expect(output).toEqual({
       statusCode: 400,
-      body: new InvalidParamError('anyError')
+      body: new SchemaValidationError('anyError')
     })
   })
 

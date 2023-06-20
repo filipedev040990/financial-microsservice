@@ -3,7 +3,7 @@ import { SchemaValidatorInterface } from '@/application/contratcs/schema-validat
 import { HttpRequest } from '@/shared/types'
 import { chargeSchema } from '@/infra/schemas/charge.schema'
 import { badRequest, serverError, success } from '@/shared/helpers/http.helper'
-import { InvalidParamError } from '@/shared/errors'
+import { SchemaValidationError } from '@/shared/errors'
 import { SaveClientUseCaseInterface } from '@/application/contratcs/save-client-usecase.interface'
 import { SavePayerUseCaseInterface } from '@/application/contratcs/save-payer-usecase.interface'
 import { SaveCreditCardUseCaseInterface } from '@/application/contratcs/save-credit-card-usecase.interface'
@@ -29,7 +29,7 @@ export class SaveChargeController implements ControllerInterface {
     try {
       const validateSchema = this.schemaValidator.validate(chargeSchema, input.body)
       if (!validateSchema.success) {
-        return badRequest(new InvalidParamError(validateSchema.error ?? 'Validation schema error'))
+        return badRequest(new SchemaValidationError(validateSchema.error ?? 'Validation schema error'))
       }
 
       const { client, payer, creditCard, charge } = input.body
