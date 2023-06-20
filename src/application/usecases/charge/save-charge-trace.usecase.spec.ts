@@ -1,8 +1,9 @@
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 import { SaveChargeTraceUseCase } from './save-charge-trace.usecase'
 import { UUIDGeneratorInterface } from '@/application/contratcs/uuid-generator.interface'
-import { mock } from 'jest-mock-extended'
 import { SaveChargeTraceRepositoryInterface } from '@/application/contratcs/charge-repository.interface'
+import { mock } from 'jest-mock-extended'
+import MockDate from 'mockdate'
 
 const uuidGenerator = mock<UUIDGeneratorInterface>()
 const repository = mock<SaveChargeTraceRepositoryInterface>()
@@ -12,6 +13,7 @@ describe('SaveChargeTraceUseCase', () => {
   let input: SaveChargeTraceUseCaseInterface.Input
 
   beforeAll(() => {
+    MockDate.set(new Date())
     sut = new SaveChargeTraceUseCase(uuidGenerator, repository)
 
     input = {
@@ -20,6 +22,10 @@ describe('SaveChargeTraceUseCase', () => {
     }
 
     uuidGenerator.generate.mockReturnValue('anyUUID')
+  })
+
+  afterAll(() => {
+    MockDate.reset()
   })
 
   test('should call uuidGenerator once', async () => {
