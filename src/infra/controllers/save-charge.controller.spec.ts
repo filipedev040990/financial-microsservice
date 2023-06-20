@@ -7,8 +7,9 @@ import { SaveChargeUseCaseInterface } from '@/application/contratcs/save-charge-
 import { SchemaValidatorInterface } from '@/application/contratcs/schema-validator.interface'
 import { mock } from 'jest-mock-extended'
 import { chargeSchema } from '../schemas/charge.schema'
+import { InvalidParamError } from '@/shared/errors'
 
-const schemaValidator = mock <SchemaValidatorInterface <any>>()
+const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
@@ -20,6 +21,8 @@ describe('SaveChargeController', () => {
 
   beforeAll(() => {
     sut = new SaveChargeController(schemaValidator)
+
+    schemaValidator.validate.mockReturnValue({ success: true })
 
     client = {
       identifier: 'anyIdentifier',
@@ -74,5 +77,16 @@ describe('SaveChargeController', () => {
 
     expect(schemaValidator.validate).toHaveBeenCalledTimes(1)
     expect(schemaValidator.validate).toHaveBeenCalledWith(chargeSchema, input.body)
+  })
+
+  test('should return 400 if validation schema fails', async () => {
+    schemaValidator.validate.mockReturnValueOnce({ success: false, error: 'anyError' })
+
+    const output = await sut.execute(input)
+
+    expect(output).toEqual({
+      statusCode: 400,
+      body: new InvalidParamError('anyError')
+    })
   })
 })
