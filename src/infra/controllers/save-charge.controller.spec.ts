@@ -10,6 +10,7 @@ import { chargeSchema } from '../schemas/charge.schema'
 import { InvalidParamError } from '@/shared/errors'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
+import { SendEncryptedCardDataToPciSecurityServiceInterface } from '@/application/contratcs/send-encrypted-card-usecase.interface'
 
 const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
 const saveClientUseCase = mock<SaveClientUseCaseInterface>()
@@ -18,6 +19,7 @@ const saveCreditCardUseCase = mock<SaveCreditCardUseCaseInterface>()
 const saveChargeUseCase = mock<SaveChargeUseCaseInterface>()
 const saveChargeTraceUseCase = mock<SaveChargeTraceUseCaseInterface>()
 const encryptData = mock<EncryptDataInterface>()
+const sendEncryptedCardDataToPciSecurity = mock<SendEncryptedCardDataToPciSecurityServiceInterface>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
@@ -28,7 +30,7 @@ describe('SaveChargeController', () => {
   let charge: any
 
   beforeAll(() => {
-    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, encryptData)
+    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, encryptData, sendEncryptedCardDataToPciSecurity)
 
     schemaValidator.validate.mockReturnValue({ success: true })
 
@@ -157,5 +159,12 @@ describe('SaveChargeController', () => {
       monthExpiration: '12',
       yearExpiration: '2023'
     })
+  })
+
+  test('should call SendEncryptedCardDataToPciSecurity once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(sendEncryptedCardDataToPciSecurity.execute).toHaveBeenCalledTimes(1)
+    expect(sendEncryptedCardDataToPciSecurity.execute).toHaveBeenCalledWith('AnyEncryptedData')
   })
 })

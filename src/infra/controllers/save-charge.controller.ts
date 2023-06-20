@@ -11,6 +11,7 @@ import { SaveChargeUseCaseInterface } from '@/application/contratcs/save-charge-
 import constants from '@/infra/constants'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
+import { SendEncryptedCardDataToPciSecurityServiceInterface } from '@/application/contratcs/send-encrypted-card-usecase.interface'
 
 export class SaveChargeController implements ControllerInterface {
   constructor (
@@ -20,7 +21,8 @@ export class SaveChargeController implements ControllerInterface {
     private readonly saveCreditCardUseCase: SaveCreditCardUseCaseInterface,
     private readonly saveChargeUseCase: SaveChargeUseCaseInterface,
     private readonly saveChargeTraceUseCase: SaveChargeTraceUseCaseInterface,
-    private readonly encryptData: EncryptDataInterface
+    private readonly encryptData: EncryptDataInterface,
+    private readonly sendEncryptedCardDataToPciSecurity: SendEncryptedCardDataToPciSecurityServiceInterface
   ) {}
 
   async execute (input: HttpRequest): Promise<any> {
@@ -48,10 +50,12 @@ export class SaveChargeController implements ControllerInterface {
       status: constants.CHARGE_STATUS_CREATED
     })
 
-    this.encryptData.encrypt({
+    const encryptedCardData = this.encryptData.encrypt({
       identifier: creditCardIdentifier,
       ...creditCard
     })
+
+    await this.sendEncryptedCardDataToPciSecurity.execute(encryptedCardData)
 
     return null
   }
