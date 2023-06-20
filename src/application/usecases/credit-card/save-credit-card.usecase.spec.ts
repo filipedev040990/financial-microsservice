@@ -53,4 +53,10 @@ describe('SaveCreditCardUseCase', () => {
 
     })
   })
+
+  test('should return an identifier', async () => {
+    const output = await sut.execute(input)
+
+    expect(output).toBe('anyIdentifier')
+  })
 })

@@ -8,17 +8,20 @@ export class SaveCreditCardUseCase implements SaveCreditCardUseCaseInterface {
     private readonly repository: SaveCreditCardRepositoryInterface
   ) {}
 
-  async execute (input: SaveCreditCardUseCaseInterface.Input): Promise<void> {
+  async execute (input: SaveCreditCardUseCaseInterface.Input): Promise<string> {
     const number = input.number
+    const identifier = this.identifierGenerator()
 
     await this.repository.save({
       id: this.uuidGenerator.generate(),
-      identifier: this.identifierGenerator(),
+      identifier,
       brand: input.brand,
       number: `${number.substring(0, 6)}XXXXXX${number.slice(number.length - 4)}`,
       expiration: `${input.yearExpiration}-${input.monthExpiration}`,
       createdAt: new Date()
     })
+
+    return identifier
   }
 
   private identifierGenerator (): string {
