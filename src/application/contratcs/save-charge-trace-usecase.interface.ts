@@ -6,6 +6,5 @@ export namespace SaveChargeTraceUseCaseInterface {
   export type Input = {
     chargeId: string
     status: string
-    createdAt: Date
   }
 }

@@ -15,7 +15,7 @@ export namespace SaveChargeRepositoryInterface {
 }
 
 export interface SaveChargeTraceRepositoryInterface {
-  save (input: SaveChargeTraceRepositoryInterface.Input): Promise<void>
+  saveTrace (input: SaveChargeTraceRepositoryInterface.Input): Promise<void>
 }
 
 export namespace SaveChargeTraceRepositoryInterface {
