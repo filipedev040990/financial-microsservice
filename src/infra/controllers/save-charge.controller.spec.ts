@@ -167,4 +167,13 @@ describe('SaveChargeController', () => {
     expect(sendEncryptedCardDataToPciSecurity.execute).toHaveBeenCalledTimes(1)
     expect(sendEncryptedCardDataToPciSecurity.execute).toHaveBeenCalledWith('AnyEncryptedData')
   })
+
+  test('should return 201 on success', async () => {
+    const output = await sut.execute(input)
+
+    expect(output).toEqual({
+      statusCode: 201,
+      body: null
+    })
+  })
 })

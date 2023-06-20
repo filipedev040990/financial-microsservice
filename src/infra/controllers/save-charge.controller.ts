@@ -2,7 +2,7 @@ import { ControllerInterface } from '@/application/contratcs/controller.interfac
 import { SchemaValidatorInterface } from '@/application/contratcs/schema-validator.interface'
 import { HttpRequest } from '@/shared/types'
 import { chargeSchema } from '@/infra/schemas/charge.schema'
-import { badRequest } from '@/shared/helpers/http.helper'
+import { badRequest, success } from '@/shared/helpers/http.helper'
 import { InvalidParamError } from '@/shared/errors'
 import { SaveClientUseCaseInterface } from '@/application/contratcs/save-client-usecase.interface'
 import { SavePayerUseCaseInterface } from '@/application/contratcs/save-payer-usecase.interface'
@@ -57,6 +57,6 @@ export class SaveChargeController implements ControllerInterface {
 
     await this.sendEncryptedCardDataToPciSecurity.execute(encryptedCardData)
 
-    return null
+    return success(201, null)
   }
 }
