@@ -13,6 +13,7 @@ const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
 const saveClientUseCase = mock<SaveClientUseCaseInterface>()
 const savePayerUseCase = mock<SavePayerUseCaseInterface>()
 const saveCreditCardUseCase = mock<SaveCreditCardUseCaseInterface>()
+const saveChargeUseCase = mock<SaveChargeUseCaseInterface>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
@@ -23,12 +24,13 @@ describe('SaveChargeController', () => {
   let charge: SaveChargeUseCaseInterface.Input
 
   beforeAll(() => {
-    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase)
+    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase)
 
     schemaValidator.validate.mockReturnValue({ success: true })
 
     saveClientUseCase.execute.mockResolvedValue('anyClientId')
     savePayerUseCase.execute.mockResolvedValue('anyPayerId')
+    saveChargeUseCase.execute.mockResolvedValue('anyChargeId')
 
     client = {
       identifier: 'anyIdentifier',
@@ -115,5 +117,12 @@ describe('SaveChargeController', () => {
 
     expect(saveCreditCardUseCase.execute).toHaveBeenCalledTimes(1)
     expect(saveCreditCardUseCase.execute).toHaveBeenCalledWith(input.body.creditCard)
+  })
+
+  test('should call SaveChargeUseCase once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(saveChargeUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(saveChargeUseCase.execute).toHaveBeenCalledWith(input.body.charge)
   })
 })

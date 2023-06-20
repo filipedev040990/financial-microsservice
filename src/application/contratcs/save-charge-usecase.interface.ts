@@ -1,5 +1,5 @@
 export interface SaveChargeUseCaseInterface {
-  execute(input: SaveChargeUseCaseInterface.Input): Promise<void>
+  execute(input: SaveChargeUseCaseInterface.Input): Promise<string>
 }
 
 export namespace SaveChargeUseCaseInterface {

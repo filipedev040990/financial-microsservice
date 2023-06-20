@@ -8,9 +8,11 @@ export class SaveChargeUseCase implements SaveChargeUseCaseInterface {
     private readonly repository: SaveChargeRepositoryInterface
   ) {}
 
-  async execute (input: SaveChargeUseCaseInterface.Input): Promise<void> {
+  async execute (input: SaveChargeUseCaseInterface.Input): Promise<string> {
+    const id = this.uuidGenerator.generate()
+
     await this.repository.save({
-      id: this.uuidGenerator.generate(),
+      id,
       clientId: input.clientId,
       payerId: input.payerId,
       paymentMethod: input.paymentMethod,
@@ -18,5 +20,7 @@ export class SaveChargeUseCase implements SaveChargeUseCaseInterface {
       totalValue: input.totalValue,
       createdAt: new Date()
     })
+
+    return id
   }
 }

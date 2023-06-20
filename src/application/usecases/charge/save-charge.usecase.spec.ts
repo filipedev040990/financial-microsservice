@@ -52,4 +52,10 @@ describe('SaveChargeUseCase', () => {
       createdAt: new Date()
     })
   })
+
+  test('should return a chargeId on success', async () => {
+    const output = await sut.execute(input)
+
+    expect(output).toBe('anyUUID')
+  })
 })

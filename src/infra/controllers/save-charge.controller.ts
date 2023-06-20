@@ -7,13 +7,15 @@ import { InvalidParamError } from '@/shared/errors'
 import { SaveClientUseCaseInterface } from '@/application/contratcs/save-client-usecase.interface'
 import { SavePayerUseCaseInterface } from '@/application/contratcs/save-payer-usecase.interface'
 import { SaveCreditCardUseCaseInterface } from '@/application/contratcs/save-credit-card-usecase.interface'
+import { SaveChargeUseCaseInterface } from '@/application/contratcs/save-charge-usecase.interface'
 
 export class SaveChargeController implements ControllerInterface {
   constructor (
     private readonly schemaValidator: SchemaValidatorInterface<typeof chargeSchema>,
     private readonly saveClientUseCase: SaveClientUseCaseInterface,
     private readonly savePayerUseCase: SavePayerUseCaseInterface,
-    private readonly saveCreditCardUseCase: SaveCreditCardUseCaseInterface
+    private readonly saveCreditCardUseCase: SaveCreditCardUseCaseInterface,
+    private readonly saveChargeUseCase: SaveChargeUseCaseInterface
   ) {}
 
   async execute (input: HttpRequest): Promise<any> {
@@ -25,6 +27,7 @@ export class SaveChargeController implements ControllerInterface {
     await this.saveClientUseCase.execute(input.body.client)
     await this.savePayerUseCase.execute(input.body.payer)
     await this.saveCreditCardUseCase.execute(input.body.creditCard)
+    await this.saveChargeUseCase.execute(input.body.charge)
 
     return null
   }
