@@ -7,7 +7,7 @@
 3. ✅ Salva os dados do cartão de crédito
 4. ✅ Salva os dados da cobrança
 5. ✅ Registra trace da charge
-6. ⛔ Retorna status 201
+6. ✅ Retorna status 201
 
 > ## Exceções
 6. ✅ Retorna 400 se o nome do cliente não for fornecido

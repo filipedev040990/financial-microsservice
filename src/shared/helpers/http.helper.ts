@@ -1,4 +1,4 @@
-import { ForbiddenError, UnauthorizedError } from '@/shared/errors'
+import { ForbiddenError, ServerError, UnauthorizedError } from '@/shared/errors'
 import { HttpResponse } from '@/shared/types'
 
 export const success = (statusCode: number, body: any): HttpResponse => ({
@@ -21,7 +21,7 @@ export const forbiddenError = (): HttpResponse => ({
   body: new ForbiddenError()
 })
 
-export const serverError = (error: Error): HttpResponse => ({
+export const serverError = (error: unknown): HttpResponse => ({
   statusCode: 500,
-  body: error
+  body: new ServerError(error instanceof Error ? error : undefined)
 })

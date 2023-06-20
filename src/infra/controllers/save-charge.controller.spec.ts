@@ -11,6 +11,7 @@ import { InvalidParamError } from '@/shared/errors'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
 import { SendEncryptedCardDataToPciSecurityServiceInterface } from '@/application/contratcs/send-encrypted-card-usecase.interface'
+import { serverError } from '@/shared/helpers/http.helper'
 
 const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
 const saveClientUseCase = mock<SaveClientUseCaseInterface>()
@@ -175,5 +176,15 @@ describe('SaveChargeController', () => {
       statusCode: 201,
       body: null
     })
+  })
+
+  test('should return server error if any usecase throws', async () => {
+    saveChargeTraceUseCase.execute.mockImplementationOnce(() => {
+      throw new Error()
+    })
+
+    const output = await sut.execute(input)
+
+    expect(output).toEqual(serverError(new Error()))
   })
 })

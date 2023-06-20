@@ -2,7 +2,7 @@ import { ControllerInterface } from '@/application/contratcs/controller.interfac
 import { SchemaValidatorInterface } from '@/application/contratcs/schema-validator.interface'
 import { HttpRequest } from '@/shared/types'
 import { chargeSchema } from '@/infra/schemas/charge.schema'
-import { badRequest, success } from '@/shared/helpers/http.helper'
+import { badRequest, serverError, success } from '@/shared/helpers/http.helper'
 import { InvalidParamError } from '@/shared/errors'
 import { SaveClientUseCaseInterface } from '@/application/contratcs/save-client-usecase.interface'
 import { SavePayerUseCaseInterface } from '@/application/contratcs/save-payer-usecase.interface'
@@ -26,37 +26,41 @@ export class SaveChargeController implements ControllerInterface {
   ) {}
 
   async execute (input: HttpRequest): Promise<any> {
-    const validateSchema = this.schemaValidator.validate(chargeSchema, input.body)
-    if (!validateSchema.success) {
-      return badRequest(new InvalidParamError(validateSchema.error ?? 'Validation schema error'))
+    try {
+      const validateSchema = this.schemaValidator.validate(chargeSchema, input.body)
+      if (!validateSchema.success) {
+        return badRequest(new InvalidParamError(validateSchema.error ?? 'Validation schema error'))
+      }
+
+      const { client, payer, creditCard, charge } = input.body
+
+      const clientId = await this.saveClientUseCase.execute(client)
+      const payerId = await this.savePayerUseCase.execute(payer)
+      const creditCardIdentifier = await this.saveCreditCardUseCase.execute(creditCard)
+
+      const chargeId = await this.saveChargeUseCase.execute({
+        clientId,
+        payerId,
+        paymentMethod: charge.paymentMethod,
+        status: constants.CHARGE_STATUS_WAITING,
+        totalValue: charge.totalValue
+      })
+
+      await this.saveChargeTraceUseCase.execute({
+        chargeId,
+        status: constants.CHARGE_STATUS_CREATED
+      })
+
+      const encryptedCardData = this.encryptData.encrypt({
+        identifier: creditCardIdentifier,
+        ...creditCard
+      })
+
+      await this.sendEncryptedCardDataToPciSecurity.execute(encryptedCardData)
+
+      return success(201, null)
+    } catch (error) {
+      return serverError(error)
     }
-
-    const { client, payer, creditCard, charge } = input.body
-
-    const clientId = await this.saveClientUseCase.execute(client)
-    const payerId = await this.savePayerUseCase.execute(payer)
-    const creditCardIdentifier = await this.saveCreditCardUseCase.execute(creditCard)
-
-    const chargeId = await this.saveChargeUseCase.execute({
-      clientId,
-      payerId,
-      paymentMethod: charge.paymentMethod,
-      status: constants.CHARGE_STATUS_WAITING,
-      totalValue: charge.totalValue
-    })
-
-    await this.saveChargeTraceUseCase.execute({
-      chargeId,
-      status: constants.CHARGE_STATUS_CREATED
-    })
-
-    const encryptedCardData = this.encryptData.encrypt({
-      identifier: creditCardIdentifier,
-      ...creditCard
-    })
-
-    await this.sendEncryptedCardDataToPciSecurity.execute(encryptedCardData)
-
-    return success(201, null)
   }
 }
