@@ -8,9 +8,11 @@ export class SaveClientUseCase implements SaveClientUseCaseInterface {
     private readonly repository: SaveClientRepositoryInterface
   ) {}
 
-  async execute (input: SaveClientUseCaseInterface.Input): Promise<void> {
+  async execute (input: SaveClientUseCaseInterface.Input): Promise<string> {
+    const id = this.uuidGenerator.generate()
+
     await this.repository.save({
-      id: this.uuidGenerator.generate(),
+      id,
       identifier: input.identifier,
       name: input.name,
       email: input.email,
@@ -19,5 +21,7 @@ export class SaveClientUseCase implements SaveClientUseCaseInterface {
       birthDate: input.birthDate,
       createdAt: new Date()
     })
+
+    return id
   }
 }

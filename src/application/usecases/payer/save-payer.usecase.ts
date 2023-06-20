@@ -8,9 +8,11 @@ export class SavePayerUseCase implements SavePayerUseCaseInterface {
     private readonly repository: SavePayerRepositoryInterface
   ) {}
 
-  async execute (input: SavePayerUseCaseInterface.Input): Promise<void> {
+  async execute (input: SavePayerUseCaseInterface.Input): Promise<string> {
+    const id = this.uuidGenerator.generate()
+
     await this.repository.save({
-      id: this.uuidGenerator.generate(),
+      id,
       name: input.name,
       email: input.email,
       document: input.document,
@@ -25,5 +27,7 @@ export class SavePayerUseCase implements SavePayerUseCaseInterface {
       state: input.state,
       createdAt: new Date()
     })
+
+    return id
   }
 }

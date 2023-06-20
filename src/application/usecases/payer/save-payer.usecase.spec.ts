@@ -64,4 +64,10 @@ describe('SavePayerUseCase', () => {
       createdAt: new Date()
     })
   })
+
+  test('should return a payer id', async () => {
+    const output = await sut.execute(input)
+
+    expect(output).toBe('anyUUID')
+  })
 })

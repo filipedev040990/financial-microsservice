@@ -2,11 +2,13 @@
 
 > ## Caso de sucesso
 
-1. ✅ Salva os dados do cliente
-2. ✅ Salva os dados do pagador
-3. ✅ Salva os dados do cartão de crédito
+1. ⛔ Salva os dados do cliente
+2. ⛔ Salva os dados do pagador
+3. ⛔ Salva os dados do cartão de crédito
 4. ⛔ Salva os dados da cobrança
-5. ⛔ Retorna status 201
+5. ⛔ Registra log
+6. ⛔ Registra trace da charge
+7. ⛔ Retorna status 201
 
 > ## Exceções
 6. ⛔ Retorna 400 se o nome do cliente não for fornecido

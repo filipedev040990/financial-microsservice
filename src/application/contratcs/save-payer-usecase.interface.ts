@@ -1,5 +1,5 @@
 export interface SavePayerUseCaseInterface {
-  execute (input: SavePayerUseCaseInterface.Input): Promise<void>
+  execute (input: SavePayerUseCaseInterface.Input): Promise<string>
 }
 
 export namespace SavePayerUseCaseInterface {

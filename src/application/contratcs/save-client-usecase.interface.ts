@@ -1,5 +1,5 @@
 export interface SaveClientUseCaseInterface {
-  execute (input: SaveClientUseCaseInterface.Input): Promise<void>
+  execute (input: SaveClientUseCaseInterface.Input): Promise<string>
 }
 
 export namespace SaveClientUseCaseInterface {

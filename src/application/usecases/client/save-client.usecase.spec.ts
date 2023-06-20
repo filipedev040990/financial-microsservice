@@ -54,4 +54,10 @@ describe('SaveClientUseCase', () => {
       createdAt: new Date()
     })
   })
+
+  test('should return a client id', async () => {
+    const output = await sut.execute(input)
+
+    expect(output).toBe('anyUUID')
+  })
 })
