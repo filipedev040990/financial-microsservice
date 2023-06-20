@@ -10,8 +10,9 @@ import { chargeSchema } from '../schemas/charge.schema'
 import { InvalidParamError } from '@/shared/errors'
 
 const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
-const clientUseCase = mock<SaveClientUseCaseInterface>()
-const payerUseCase = mock<SavePayerUseCaseInterface>()
+const saveClientUseCase = mock<SaveClientUseCaseInterface>()
+const savePayerUseCase = mock<SavePayerUseCaseInterface>()
+const saveCreditCardUseCase = mock<SaveCreditCardUseCaseInterface>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
@@ -22,12 +23,12 @@ describe('SaveChargeController', () => {
   let charge: SaveChargeUseCaseInterface.Input
 
   beforeAll(() => {
-    sut = new SaveChargeController(schemaValidator, clientUseCase, payerUseCase)
+    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase)
 
     schemaValidator.validate.mockReturnValue({ success: true })
 
-    clientUseCase.execute.mockResolvedValue('anyClientId')
-    payerUseCase.execute.mockResolvedValue('anyPayerId')
+    saveClientUseCase.execute.mockResolvedValue('anyClientId')
+    savePayerUseCase.execute.mockResolvedValue('anyPayerId')
 
     client = {
       identifier: 'anyIdentifier',
@@ -98,14 +99,21 @@ describe('SaveChargeController', () => {
   test('should call SaveClientUseCase once and with correct values', async () => {
     await sut.execute(input)
 
-    expect(clientUseCase.execute).toHaveBeenCalledTimes(1)
-    expect(clientUseCase.execute).toHaveBeenCalledWith(input.body.client)
+    expect(saveClientUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(saveClientUseCase.execute).toHaveBeenCalledWith(input.body.client)
   })
 
   test('should call SavePayerUseCase once and with correct values', async () => {
     await sut.execute(input)
 
-    expect(payerUseCase.execute).toHaveBeenCalledTimes(1)
-    expect(payerUseCase.execute).toHaveBeenCalledWith(input.body.payer)
+    expect(savePayerUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(savePayerUseCase.execute).toHaveBeenCalledWith(input.body.payer)
+  })
+
+  test('should call SaveCreditCardUseCase once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(saveCreditCardUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(saveCreditCardUseCase.execute).toHaveBeenCalledWith(input.body.creditCard)
   })
 })

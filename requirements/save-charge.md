@@ -4,7 +4,7 @@
 
 1. ✅ Salva os dados do cliente
 2. ✅ Salva os dados do pagador
-3. ⛔ Salva os dados do cartão de crédito
+3. ✅ Salva os dados do cartão de crédito
 4. ⛔ Salva os dados da cobrança
 5. ⛔ Registra trace da charge
 6. ⛔ Retorna status 201
