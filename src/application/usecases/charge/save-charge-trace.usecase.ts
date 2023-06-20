@@ -1,0 +1,12 @@
+import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
+import { UUIDGeneratorInterface } from '@/application/contratcs/uuid-generator.interface'
+
+export class SaveChargeTraceUseCase implements SaveChargeTraceUseCaseInterface {
+  constructor (
+    private readonly uuidGenerator: UUIDGeneratorInterface
+  ) {}
+
+  async execute (input: SaveChargeTraceUseCaseInterface.Input): Promise<void> {
+    this.uuidGenerator.generate()
+  }
+}
