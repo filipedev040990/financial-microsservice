@@ -8,12 +8,14 @@ import { SchemaValidatorInterface } from '@/application/contratcs/schema-validat
 import { mock } from 'jest-mock-extended'
 import { chargeSchema } from '../schemas/charge.schema'
 import { InvalidParamError } from '@/shared/errors'
+import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 
 const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
 const saveClientUseCase = mock<SaveClientUseCaseInterface>()
 const savePayerUseCase = mock<SavePayerUseCaseInterface>()
 const saveCreditCardUseCase = mock<SaveCreditCardUseCaseInterface>()
 const saveChargeUseCase = mock<SaveChargeUseCaseInterface>()
+const saveChargeTraceUseCase = mock<SaveChargeTraceUseCaseInterface>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
@@ -21,10 +23,10 @@ describe('SaveChargeController', () => {
   let client: SaveClientUseCaseInterface.Input
   let payer: SavePayerUseCaseInterface.Input
   let creditCard: SaveCreditCardUseCaseInterface.Input
-  let charge: SaveChargeUseCaseInterface.Input
+  let charge: any
 
   beforeAll(() => {
-    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase)
+    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase)
 
     schemaValidator.validate.mockReturnValue({ success: true })
 
@@ -63,8 +65,6 @@ describe('SaveChargeController', () => {
     }
 
     charge = {
-      clientId: 'anyClientId',
-      payerId: 'anyPayerId',
       paymentMethod: 'credit_card',
       status: 'waiting',
       totalValue: 10000
@@ -123,6 +123,22 @@ describe('SaveChargeController', () => {
     await sut.execute(input)
 
     expect(saveChargeUseCase.execute).toHaveBeenCalledTimes(1)
-    expect(saveChargeUseCase.execute).toHaveBeenCalledWith(input.body.charge)
+    expect(saveChargeUseCase.execute).toHaveBeenCalledWith({
+      clientId: 'anyClientId',
+      payerId: 'anyPayerId',
+      paymentMethod: 'credit_card',
+      status: 'waiting',
+      totalValue: 10000
+    })
+  })
+
+  test('should call SaveChargeTraceUseCase once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(saveChargeTraceUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(saveChargeTraceUseCase.execute).toHaveBeenCalledWith({
+      chargeId: 'anyChargeId',
+      status: 'created'
+    })
   })
 })

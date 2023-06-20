@@ -8,6 +8,8 @@ import { SaveClientUseCaseInterface } from '@/application/contratcs/save-client-
 import { SavePayerUseCaseInterface } from '@/application/contratcs/save-payer-usecase.interface'
 import { SaveCreditCardUseCaseInterface } from '@/application/contratcs/save-credit-card-usecase.interface'
 import { SaveChargeUseCaseInterface } from '@/application/contratcs/save-charge-usecase.interface'
+import constants from '../constants'
+import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 
 export class SaveChargeController implements ControllerInterface {
   constructor (
@@ -15,7 +17,8 @@ export class SaveChargeController implements ControllerInterface {
     private readonly saveClientUseCase: SaveClientUseCaseInterface,
     private readonly savePayerUseCase: SavePayerUseCaseInterface,
     private readonly saveCreditCardUseCase: SaveCreditCardUseCaseInterface,
-    private readonly saveChargeUseCase: SaveChargeUseCaseInterface
+    private readonly saveChargeUseCase: SaveChargeUseCaseInterface,
+    private readonly saveChargeTraceUseCase: SaveChargeTraceUseCaseInterface
   ) {}
 
   async execute (input: HttpRequest): Promise<any> {
@@ -24,10 +27,22 @@ export class SaveChargeController implements ControllerInterface {
       return badRequest(new InvalidParamError(validateSchema.error ?? 'Validation schema error'))
     }
 
-    await this.saveClientUseCase.execute(input.body.client)
-    await this.savePayerUseCase.execute(input.body.payer)
+    const clientId = await this.saveClientUseCase.execute(input.body.client)
+    const payerId = await this.savePayerUseCase.execute(input.body.payer)
     await this.saveCreditCardUseCase.execute(input.body.creditCard)
-    await this.saveChargeUseCase.execute(input.body.charge)
+
+    const chargeId = await this.saveChargeUseCase.execute({
+      clientId,
+      payerId,
+      paymentMethod: input.body.charge.paymentMethod,
+      status: constants.CHARGE_STATUS_WAITING,
+      totalValue: input.body.charge.totalValue
+    })
+
+    await this.saveChargeTraceUseCase.execute({
+      chargeId,
+      status: constants.CHARGE_STATUS_CREATED
+    })
 
     return null
   }
