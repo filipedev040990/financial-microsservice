@@ -10,6 +10,7 @@ import { chargeSchema } from '../schemas/charge.schema'
 import { InvalidParamError } from '@/shared/errors'
 
 const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
+const clientUseCase = mock<SaveClientUseCaseInterface>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
@@ -20,9 +21,11 @@ describe('SaveChargeController', () => {
   let charge: SaveChargeUseCaseInterface.Input
 
   beforeAll(() => {
-    sut = new SaveChargeController(schemaValidator)
+    sut = new SaveChargeController(schemaValidator, clientUseCase)
 
     schemaValidator.validate.mockReturnValue({ success: true })
+
+    clientUseCase.execute.mockResolvedValue('anyClientId')
 
     client = {
       identifier: 'anyIdentifier',
@@ -88,5 +91,12 @@ describe('SaveChargeController', () => {
       statusCode: 400,
       body: new InvalidParamError('anyError')
     })
+  })
+
+  test('should call SaveClientUseCase once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(clientUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(clientUseCase.execute).toHaveBeenCalledWith(input.body.client)
   })
 })
