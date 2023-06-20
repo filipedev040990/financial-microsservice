@@ -8,8 +8,9 @@ import { SaveClientUseCaseInterface } from '@/application/contratcs/save-client-
 import { SavePayerUseCaseInterface } from '@/application/contratcs/save-payer-usecase.interface'
 import { SaveCreditCardUseCaseInterface } from '@/application/contratcs/save-credit-card-usecase.interface'
 import { SaveChargeUseCaseInterface } from '@/application/contratcs/save-charge-usecase.interface'
-import constants from '../constants'
+import constants from '@/infra/constants'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
+import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
 
 export class SaveChargeController implements ControllerInterface {
   constructor (
@@ -18,7 +19,8 @@ export class SaveChargeController implements ControllerInterface {
     private readonly savePayerUseCase: SavePayerUseCaseInterface,
     private readonly saveCreditCardUseCase: SaveCreditCardUseCaseInterface,
     private readonly saveChargeUseCase: SaveChargeUseCaseInterface,
-    private readonly saveChargeTraceUseCase: SaveChargeTraceUseCaseInterface
+    private readonly saveChargeTraceUseCase: SaveChargeTraceUseCaseInterface,
+    private readonly encryptData: EncryptDataInterface
   ) {}
 
   async execute (input: HttpRequest): Promise<any> {
@@ -27,21 +29,28 @@ export class SaveChargeController implements ControllerInterface {
       return badRequest(new InvalidParamError(validateSchema.error ?? 'Validation schema error'))
     }
 
-    const clientId = await this.saveClientUseCase.execute(input.body.client)
-    const payerId = await this.savePayerUseCase.execute(input.body.payer)
-    await this.saveCreditCardUseCase.execute(input.body.creditCard)
+    const { client, payer, creditCard, charge } = input.body
+
+    const clientId = await this.saveClientUseCase.execute(client)
+    const payerId = await this.savePayerUseCase.execute(payer)
+    const creditCardIdentifier = await this.saveCreditCardUseCase.execute(creditCard)
 
     const chargeId = await this.saveChargeUseCase.execute({
       clientId,
       payerId,
-      paymentMethod: input.body.charge.paymentMethod,
+      paymentMethod: charge.paymentMethod,
       status: constants.CHARGE_STATUS_WAITING,
-      totalValue: input.body.charge.totalValue
+      totalValue: charge.totalValue
     })
 
     await this.saveChargeTraceUseCase.execute({
       chargeId,
       status: constants.CHARGE_STATUS_CREATED
+    })
+
+    this.encryptData.encrypt({
+      identifier: creditCardIdentifier,
+      ...creditCard
     })
 
     return null

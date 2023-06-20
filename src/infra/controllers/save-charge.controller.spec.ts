@@ -9,6 +9,7 @@ import { mock } from 'jest-mock-extended'
 import { chargeSchema } from '../schemas/charge.schema'
 import { InvalidParamError } from '@/shared/errors'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
+import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
 
 const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
 const saveClientUseCase = mock<SaveClientUseCaseInterface>()
@@ -16,6 +17,7 @@ const savePayerUseCase = mock<SavePayerUseCaseInterface>()
 const saveCreditCardUseCase = mock<SaveCreditCardUseCaseInterface>()
 const saveChargeUseCase = mock<SaveChargeUseCaseInterface>()
 const saveChargeTraceUseCase = mock<SaveChargeTraceUseCaseInterface>()
+const encryptData = mock<EncryptDataInterface>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
@@ -26,13 +28,15 @@ describe('SaveChargeController', () => {
   let charge: any
 
   beforeAll(() => {
-    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase)
+    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, encryptData)
 
     schemaValidator.validate.mockReturnValue({ success: true })
 
     saveClientUseCase.execute.mockResolvedValue('anyClientId')
     savePayerUseCase.execute.mockResolvedValue('anyPayerId')
     saveChargeUseCase.execute.mockResolvedValue('anyChargeId')
+    encryptData.encrypt.mockReturnValue('AnyEncryptedData')
+    saveCreditCardUseCase.execute.mockResolvedValue('anyCreditCardIdentifier')
 
     client = {
       identifier: 'anyIdentifier',
@@ -139,6 +143,19 @@ describe('SaveChargeController', () => {
     expect(saveChargeTraceUseCase.execute).toHaveBeenCalledWith({
       chargeId: 'anyChargeId',
       status: 'created'
+    })
+  })
+
+  test('should call EncryptData once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(encryptData.encrypt).toHaveBeenCalledTimes(1)
+    expect(encryptData.encrypt).toHaveBeenCalledWith({
+      identifier: 'anyCreditCardIdentifier',
+      brand: 'anyBrand',
+      number: '1234567891021365',
+      monthExpiration: '12',
+      yearExpiration: '2023'
     })
   })
 })
