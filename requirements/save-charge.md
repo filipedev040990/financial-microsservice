@@ -101,8 +101,8 @@
   status: string (waiting, paid, unpaid)
   totalValue: number
   paymentMethod: string
-  paidAt: Date
-  unpaidAt: Date
+  paidAt?: Date
+  unpaidAt?: Date
   createdAt: Date
 }
 
