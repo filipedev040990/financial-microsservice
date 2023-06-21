@@ -62,7 +62,6 @@ describe('SaveChargeController', () => {
     }
 
     creditCard = {
-      payerId: 'anyPayerId',
       brand: 'anyBrand',
       number: '1234567891021365',
       monthExpiration: '12',
@@ -155,7 +154,6 @@ describe('SaveChargeController', () => {
 
     expect(encryptData.encrypt).toHaveBeenCalledTimes(1)
     expect(encryptData.encrypt).toHaveBeenCalledWith({
-      payerId: 'anyPayerId',
       brand: 'anyBrand',
       number: '1234567891021365',
       monthExpiration: '12',

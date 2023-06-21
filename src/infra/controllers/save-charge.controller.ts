@@ -35,11 +35,7 @@ export class SaveChargeController implements ControllerInterface {
       const clientId = await this.saveClientUseCase.execute(client)
       const payerId = await this.savePayerUseCase.execute(payer)
 
-      const cardData = {
-        payerId,
-        ...creditCard
-      }
-      const encryptedCardData = this.encryptData.encrypt(cardData)
+      const encryptedCardData = this.encryptData.encrypt(creditCard)
 
       await this.saveCreditCardUseCase.execute({
         payerId,
