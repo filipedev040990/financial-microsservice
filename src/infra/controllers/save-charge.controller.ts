@@ -11,7 +11,6 @@ import { SaveChargeUseCaseInterface } from '@/application/contratcs/save-charge-
 import constants from '@/infra/constants'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
-import { SendEncryptedCardDataToPciSecurityServiceInterface } from '@/application/contratcs/send-encrypted-card-usecase.interface'
 
 export class SaveChargeController implements ControllerInterface {
   constructor (
@@ -21,8 +20,7 @@ export class SaveChargeController implements ControllerInterface {
     private readonly saveCreditCardUseCase: SaveCreditCardUseCaseInterface,
     private readonly saveChargeUseCase: SaveChargeUseCaseInterface,
     private readonly saveChargeTraceUseCase: SaveChargeTraceUseCaseInterface,
-    private readonly encryptData: EncryptDataInterface,
-    private readonly sendEncryptedCardDataToPciSecurity: SendEncryptedCardDataToPciSecurityServiceInterface
+    private readonly encryptData: EncryptDataInterface
   ) {}
 
   async execute (input: HttpRequest): Promise<any> {
@@ -36,9 +34,16 @@ export class SaveChargeController implements ControllerInterface {
 
       const clientId = await this.saveClientUseCase.execute(client)
       const payerId = await this.savePayerUseCase.execute(payer)
-      const creditCardIdentifier = await this.saveCreditCardUseCase.execute({
+
+      const cardData = {
         payerId,
         ...creditCard
+      }
+      const encryptedCardData = this.encryptData.encrypt(cardData)
+
+      await this.saveCreditCardUseCase.execute({
+        payerId,
+        encryptedData: encryptedCardData
       })
 
       const chargeId = await this.saveChargeUseCase.execute({
@@ -53,13 +58,6 @@ export class SaveChargeController implements ControllerInterface {
         chargeId,
         status: constants.CHARGE_STATUS_CREATED
       })
-
-      const encryptedCardData = this.encryptData.encrypt({
-        identifier: creditCardIdentifier,
-        ...creditCard
-      })
-
-      await this.sendEncryptedCardDataToPciSecurity.execute(encryptedCardData)
 
       return success(201, null)
     } catch (error) {

@@ -70,14 +70,11 @@ model ChargeTrace {
 }
 
 model CreditCard {
-  id         String   @id
-  payerId    String
-  payer      Payer    @relation(fields: [payerId], references: [id])
-  identifier String
-  brand      String
-  number     String
-  expiration String
-  createdAt  DateTime
+  id            String   @id
+  payerId       String
+  payer         Payer    @relation(fields: [payerId], references: [id])
+  encryptedData String
+  createdAt     DateTime
 
   @@map("cards")
 }

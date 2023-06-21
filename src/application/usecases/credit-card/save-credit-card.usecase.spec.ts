@@ -7,7 +7,6 @@ import MockDate from 'mockdate'
 
 const uuidGenerator = mock<UUIDGeneratorInterface>()
 const repository = mock<SaveCreditCardRepositoryInterface>()
-const identifierGeneratorMock = jest.spyOn(SaveCreditCardUseCase.prototype as any, 'identifierGenerator')
 
 describe('SaveCreditCardUseCase', () => {
   let sut: SaveCreditCardUseCase
@@ -20,14 +19,10 @@ describe('SaveCreditCardUseCase', () => {
 
     input = {
       payerId: 'anyPayerId',
-      brand: 'anyBrand',
-      number: '1234567891021365',
-      monthExpiration: '12',
-      yearExpiration: '2023'
+      encryptedData: 'encryptedData'
     }
 
     uuidGenerator.generate.mockReturnValue('anyUUID')
-    identifierGeneratorMock.mockReturnValue('anyIdentifier')
   })
 
   afterAll(() => {
@@ -47,18 +42,9 @@ describe('SaveCreditCardUseCase', () => {
     expect(repository.save).toHaveBeenCalledWith({
       id: 'anyUUID',
       payerId: 'anyPayerId',
-      identifier: 'anyIdentifier',
-      brand: 'anyBrand',
-      number: '123456XXXXXX1365',
-      expiration: '2023-12',
+      encryptedData: 'encryptedData',
       createdAt: new Date()
 
     })
-  })
-
-  test('should return an identifier', async () => {
-    const output = await sut.execute(input)
-
-    expect(output).toBe('anyIdentifier')
   })
 })

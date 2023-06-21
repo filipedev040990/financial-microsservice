@@ -76,19 +76,8 @@
 {
   id: string
   identifier: string (pode ser um uuid)
-  holderName: string
-  brand: string
-  monthExpiration: string
-  yearExpiration: string
-  cvv: string
+  encryptedData: string
   createdAt: Date
-
-  ** Neste microsserviço devem ser armazenado apenas:
-      máscara do número do cartão (123456XXXXXX1234)
-      expiration (2023-12)
-      brand
-
-  ** As outras informações devem ser criptografadas e salvas em um microsserviço a parte
 }
 
 ## Objeto charges

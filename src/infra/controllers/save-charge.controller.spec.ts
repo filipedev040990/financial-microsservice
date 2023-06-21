@@ -10,7 +10,6 @@ import { chargeSchema } from '../schemas/charge.schema'
 import { SchemaValidationError } from '@/shared/errors'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
-import { SendEncryptedCardDataToPciSecurityServiceInterface } from '@/application/contratcs/send-encrypted-card-usecase.interface'
 import { serverError } from '@/shared/helpers/http.helper'
 
 const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
@@ -20,18 +19,17 @@ const saveCreditCardUseCase = mock<SaveCreditCardUseCaseInterface>()
 const saveChargeUseCase = mock<SaveChargeUseCaseInterface>()
 const saveChargeTraceUseCase = mock<SaveChargeTraceUseCaseInterface>()
 const encryptData = mock<EncryptDataInterface>()
-const sendEncryptedCardDataToPciSecurity = mock<SendEncryptedCardDataToPciSecurityServiceInterface>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
   let input: HttpRequest
   let client: SaveClientUseCaseInterface.Input
   let payer: SavePayerUseCaseInterface.Input
-  let creditCard: SaveCreditCardUseCaseInterface.Input
+  let creditCard: any
   let charge: any
 
   beforeAll(() => {
-    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, encryptData, sendEncryptedCardDataToPciSecurity)
+    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, encryptData)
 
     schemaValidator.validate.mockReturnValue({ success: true })
 
@@ -39,7 +37,6 @@ describe('SaveChargeController', () => {
     savePayerUseCase.execute.mockResolvedValue('anyPayerId')
     saveChargeUseCase.execute.mockResolvedValue('anyChargeId')
     encryptData.encrypt.mockReturnValue('AnyEncryptedData')
-    saveCreditCardUseCase.execute.mockResolvedValue('anyCreditCardIdentifier')
 
     client = {
       identifier: 'anyIdentifier',
@@ -124,7 +121,10 @@ describe('SaveChargeController', () => {
     await sut.execute(input)
 
     expect(saveCreditCardUseCase.execute).toHaveBeenCalledTimes(1)
-    expect(saveCreditCardUseCase.execute).toHaveBeenCalledWith(input.body.creditCard)
+    expect(saveCreditCardUseCase.execute).toHaveBeenCalledWith({
+      payerId: 'anyPayerId',
+      encryptedData: 'AnyEncryptedData'
+    })
   })
 
   test('should call SaveChargeUseCase once and with correct values', async () => {
@@ -156,19 +156,11 @@ describe('SaveChargeController', () => {
     expect(encryptData.encrypt).toHaveBeenCalledTimes(1)
     expect(encryptData.encrypt).toHaveBeenCalledWith({
       payerId: 'anyPayerId',
-      identifier: 'anyCreditCardIdentifier',
       brand: 'anyBrand',
       number: '1234567891021365',
       monthExpiration: '12',
       yearExpiration: '2023'
     })
-  })
-
-  test('should call SendEncryptedCardDataToPciSecurity once and with correct values', async () => {
-    await sut.execute(input)
-
-    expect(sendEncryptedCardDataToPciSecurity.execute).toHaveBeenCalledTimes(1)
-    expect(sendEncryptedCardDataToPciSecurity.execute).toHaveBeenCalledWith('AnyEncryptedData')
   })
 
   test('should return 201 on success', async () => {
