@@ -15,6 +15,7 @@ export class SaveCreditCardUseCase implements SaveCreditCardUseCaseInterface {
     await this.repository.save({
       id: this.uuidGenerator.generate(),
       identifier,
+      payerId: input.payerId,
       brand: input.brand,
       number: `${number.substring(0, 6)}XXXXXX${number.slice(number.length - 4)}`,
       expiration: `${input.yearExpiration}-${input.monthExpiration}`,

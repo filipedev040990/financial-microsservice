@@ -19,6 +19,7 @@ describe('SaveCreditCardUseCase', () => {
     sut = new SaveCreditCardUseCase(uuidGenerator, repository)
 
     input = {
+      payerId: 'anyPayerId',
       brand: 'anyBrand',
       number: '1234567891021365',
       monthExpiration: '12',
@@ -45,6 +46,7 @@ describe('SaveCreditCardUseCase', () => {
     expect(repository.save).toHaveBeenCalledTimes(1)
     expect(repository.save).toHaveBeenCalledWith({
       id: 'anyUUID',
+      payerId: 'anyPayerId',
       identifier: 'anyIdentifier',
       brand: 'anyBrand',
       number: '123456XXXXXX1365',

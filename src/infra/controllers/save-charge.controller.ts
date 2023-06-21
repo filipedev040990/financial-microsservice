@@ -36,7 +36,10 @@ export class SaveChargeController implements ControllerInterface {
 
       const clientId = await this.saveClientUseCase.execute(client)
       const payerId = await this.savePayerUseCase.execute(payer)
-      const creditCardIdentifier = await this.saveCreditCardUseCase.execute(creditCard)
+      const creditCardIdentifier = await this.saveCreditCardUseCase.execute({
+        payerId,
+        ...creditCard
+      })
 
       const chargeId = await this.saveChargeUseCase.execute({
         clientId,

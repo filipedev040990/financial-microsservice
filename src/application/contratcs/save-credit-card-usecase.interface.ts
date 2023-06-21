@@ -4,6 +4,7 @@ export interface SaveCreditCardUseCaseInterface {
 
 export namespace SaveCreditCardUseCaseInterface {
   export type Input = {
+    payerId: string
     brand: string
     number: string
     monthExpiration: string
