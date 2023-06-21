@@ -81,7 +81,6 @@
   monthExpiration: string
   yearExpiration: string
   cvv: string
-  sentToPciSecurityMicroService: boolean
   createdAt: Date
 
   ** Neste microsserviço devem ser armazenado apenas:
