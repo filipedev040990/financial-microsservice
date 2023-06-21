@@ -9,3 +9,75 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Client {
+  id          String   @id
+  identifier  String
+  name        String
+  email       String
+  document    String
+  birthDate   DateTime
+  phoneNumber String
+  createdAt   DateTime
+  Charge      Charge?
+
+  @@map("clients")
+}
+
+model Payer {
+  id           String       @id
+  personType   String
+  name         String
+  email        String
+  document     String
+  phoneNumber  String
+  cep          String
+  street       String
+  complement   String?
+  neighborhood String
+  city         String
+  state        String
+  createdAt    DateTime
+  Charge       Charge?
+  CreditCard   CreditCard[]
+
+  @@map("payers")
+}
+
+model Charge {
+  id            String        @id
+  clientId      String        @unique
+  payerId       String        @unique
+  client        Client        @relation(fields: [clientId], references: [id])
+  payer         Payer         @relation(fields: [payerId], references: [id])
+  status        String
+  totalValue    Int
+  paymentMethod String
+  createdAt     DateTime
+  ChargeTrace   ChargeTrace[]
+
+  @@map("charges")
+}
+
+model ChargeTrace {
+  id        String   @id
+  chargeId  String
+  charge    Charge   @relation(fields: [chargeId], references: [id])
+  status    String
+  createdAt DateTime
+
+  @@map("charges_trace")
+}
+
+model CreditCard {
+  id         String   @id
+  payerId    String
+  payer      Payer    @relation(fields: [payerId], references: [id])
+  identifier String
+  brand      String
+  number     String
+  expiration String
+  createdAt  DateTime
+
+  @@map("cards")
+}
