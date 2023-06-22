@@ -2,7 +2,7 @@ import { SchemaValidatorInterface } from '@/application/contratcs/schema-validat
 import { ZodSchema } from 'zod'
 
 export class ZodSchemaValidator implements SchemaValidatorInterface <ZodSchema> {
-  validate<T>(schema: ZodSchema<T>, data: T): { success: boolean, error?: any | undefined } {
+  validate<T>(schema: ZodSchema, data: T): { success: boolean, error?: any | undefined } {
     const response = schema.safeParse(data)
     if (!response.success) {
       return {
