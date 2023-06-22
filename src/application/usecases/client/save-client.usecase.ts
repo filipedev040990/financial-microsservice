@@ -18,7 +18,7 @@ export class SaveClientUseCase implements SaveClientUseCaseInterface {
       email: input.email,
       document: input.document,
       phoneNumber: input.phoneNumber,
-      birthDate: input.birthDate,
+      birthDate: new Date(input.birthDate),
       createdAt: new Date()
     })
 

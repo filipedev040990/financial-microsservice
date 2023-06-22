@@ -7,7 +7,6 @@ const chargeSchema = z.object({
   client: clientSchema,
   payer: payerSchema,
   creditCard: creditCardSchema,
-  status: z.string(),
   totalValue: z.number(),
   paymentMethod: z.string()
 })

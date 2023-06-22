@@ -14,8 +14,9 @@ export class MissingParamError extends Error {
 
 export class SchemaValidationError extends Error {
   constructor (error: any) {
-    super(error)
+    super(error.message)
     this.name = 'SchemaValidationError'
+    this.message = error.message
   }
 }
 

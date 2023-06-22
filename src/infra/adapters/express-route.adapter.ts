@@ -9,7 +9,7 @@ export const expressRouteAdapter = (controller: ControllerInterface) => {
     }
 
     const { statusCode, body }: HttpResponse = await controller.execute(input)
-    const bodyOutput = (statusCode > 199 && statusCode < 500) ? body : { error: body.error.message }
+    const bodyOutput = (statusCode > 199 && statusCode < 500) ? body : { error: body.message }
 
     res.status(statusCode).json(bodyOutput)
   }

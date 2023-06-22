@@ -7,7 +7,6 @@ import { SaveChargeUseCaseInterface } from '@/application/contratcs/save-charge-
 import { SchemaValidatorInterface } from '@/application/contratcs/schema-validator.interface'
 import { mock } from 'jest-mock-extended'
 import { chargeSchema } from '../schemas/charge.schema'
-import { SchemaValidationError } from '@/shared/errors'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
 import { serverError } from '@/shared/helpers/http.helper'
@@ -68,14 +67,10 @@ describe('SaveChargeController', () => {
       yearExpiration: '2023'
     }
 
-    charge = {
-      paymentMethod: 'credit_card',
-      status: 'waiting',
-      totalValue: 10000
-    }
-
     input = {
       body: {
+        paymentMethod: 'credit_card',
+        totalValue: 10000,
         client,
         payer,
         creditCard,
@@ -98,7 +93,7 @@ describe('SaveChargeController', () => {
 
     expect(output).toEqual({
       statusCode: 400,
-      body: new SchemaValidationError('anyError')
+      body: 'anyError'
     })
   })
 

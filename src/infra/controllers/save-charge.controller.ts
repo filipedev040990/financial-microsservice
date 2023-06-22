@@ -3,7 +3,6 @@ import { SchemaValidatorInterface } from '@/application/contratcs/schema-validat
 import { HttpRequest } from '@/shared/types'
 import { chargeSchema } from '@/infra/schemas/charge.schema'
 import { badRequest, serverError, success } from '@/shared/helpers/http.helper'
-import { SchemaValidationError } from '@/shared/errors'
 import { SaveClientUseCaseInterface } from '@/application/contratcs/save-client-usecase.interface'
 import { SavePayerUseCaseInterface } from '@/application/contratcs/save-payer-usecase.interface'
 import { SaveCreditCardUseCaseInterface } from '@/application/contratcs/save-credit-card-usecase.interface'
@@ -27,10 +26,10 @@ export class SaveChargeController implements ControllerInterface {
     try {
       const validateSchema = this.schemaValidator.validate(chargeSchema, input.body)
       if (!validateSchema.success) {
-        return badRequest(new SchemaValidationError(validateSchema.error ?? 'Validation schema error'))
+        return badRequest(validateSchema.error)
       }
 
-      const { client, payer, creditCard, charge } = input.body
+      const { client, payer, creditCard, paymentMethod, totalValue } = input.body
 
       const clientId = await this.saveClientUseCase.execute(client)
       const payerId = await this.savePayerUseCase.execute(payer)
@@ -45,9 +44,9 @@ export class SaveChargeController implements ControllerInterface {
       const chargeId = await this.saveChargeUseCase.execute({
         clientId,
         payerId,
-        paymentMethod: charge.paymentMethod,
+        paymentMethod: paymentMethod,
         status: constants.CHARGE_STATUS_WAITING,
-        totalValue: charge.totalValue
+        totalValue: totalValue
       })
 
       await this.saveChargeTraceUseCase.execute({
