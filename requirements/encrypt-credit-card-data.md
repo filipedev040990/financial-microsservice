@@ -2,7 +2,7 @@
 
 > ## Caso de sucesso
 
-1. ⛔ Criptografa dados do cartão usando AES (crypto-js)
+1. ✅ Criptografa dados do cartão usando AES (crypto-js)
 
 ✅
 ⛔
