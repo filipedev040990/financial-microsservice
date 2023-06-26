@@ -10,6 +10,7 @@ import { chargeSchema } from '../schemas/charge.schema'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
 import { serverError } from '@/shared/helpers/http.helper'
+import { SaveRequestUseCaseInterface } from '@/application/contratcs/save-request-usecase.interface'
 
 const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
 const saveClientUseCase = mock<SaveClientUseCaseInterface>()
@@ -18,6 +19,7 @@ const saveCreditCardUseCase = mock<SaveCreditCardUseCaseInterface>()
 const saveChargeUseCase = mock<SaveChargeUseCaseInterface>()
 const saveChargeTraceUseCase = mock<SaveChargeTraceUseCaseInterface>()
 const encryptData = mock<EncryptDataInterface>()
+const saveRequestUseCase = mock<SaveRequestUseCaseInterface>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
@@ -28,7 +30,7 @@ describe('SaveChargeController', () => {
   let charge: any
 
   beforeAll(() => {
-    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, encryptData)
+    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, encryptData, saveRequestUseCase)
 
     schemaValidator.validate.mockReturnValue({ success: true })
 
@@ -68,6 +70,8 @@ describe('SaveChargeController', () => {
     }
 
     input = {
+      originalUrl: 'any url',
+      method: 'any method',
       body: {
         paymentMethod: 'credit_card',
         totalValue: 10000,
@@ -75,6 +79,14 @@ describe('SaveChargeController', () => {
         payer,
         creditCard,
         charge
+      },
+      headers: {
+        'x-real-ip': null,
+        'cf-connecting-ip': null,
+        'x-forwarded-for': null
+      },
+      socket: {
+        remoteAddress: 'any ip'
       }
     }
   })
@@ -173,5 +185,16 @@ describe('SaveChargeController', () => {
     const output = await sut.execute(input)
 
     expect(output).toEqual(serverError(new Error()))
+  })
+
+  test('should call saveRequestUseCase once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(saveRequestUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(saveRequestUseCase.execute).toHaveBeenCalledWith({
+      path: 'any url',
+      method: 'any method',
+      input: JSON.stringify(input.body)
+    })
   })
 })

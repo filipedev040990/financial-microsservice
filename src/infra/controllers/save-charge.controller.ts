@@ -10,6 +10,7 @@ import { SaveChargeUseCaseInterface } from '@/application/contratcs/save-charge-
 import constants from '@/infra/constants'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
+import { SaveRequestUseCaseInterface } from '@/application/contratcs/save-request-usecase.interface'
 
 export class SaveChargeController implements ControllerInterface {
   constructor (
@@ -19,11 +20,18 @@ export class SaveChargeController implements ControllerInterface {
     private readonly saveCreditCardUseCase: SaveCreditCardUseCaseInterface,
     private readonly saveChargeUseCase: SaveChargeUseCaseInterface,
     private readonly saveChargeTraceUseCase: SaveChargeTraceUseCaseInterface,
-    private readonly encryptData: EncryptDataInterface
+    private readonly encryptData: EncryptDataInterface,
+    private readonly saveRequestUseCase: SaveRequestUseCaseInterface
   ) {}
 
   async execute (input: HttpRequest): Promise<any> {
     try {
+      await this.saveRequestUseCase.execute({
+        path: input.originalUrl,
+        method: input.method as string,
+        input: JSON.stringify(input.body)
+      })
+
       const validateSchema = this.schemaValidator.validate(chargeSchema, input.body)
       if (!validateSchema.success) {
         return badRequest(validateSchema.error)

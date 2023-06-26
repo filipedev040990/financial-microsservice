@@ -1,4 +1,10 @@
 export type HttpRequest = {
+  originalUrl?: any
+  method?: string
+  socket?: any
+  ip?: any
+  headers?: any
+  params?: any
   body?: any
 }
 
