@@ -26,3 +26,15 @@ export namespace SaveChargeTraceRepositoryInterface {
     createdAt: Date
   }
 }
+
+export interface UpdateChargeStatusRepositoryInterface {
+  updateStatus (input: UpdateChargeStatusRepositoryInterface.Input): Promise<void>
+}
+
+export namespace UpdateChargeStatusRepositoryInterface {
+  export type Input = {
+    id: string
+    status: string
+    updatedAt: Date
+  }
+}
