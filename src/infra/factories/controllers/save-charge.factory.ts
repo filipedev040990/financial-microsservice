@@ -6,6 +6,8 @@ import { makeSaveCreditCardUseCase } from '../usecases/save-credit-card.factory'
 import { makeSaveChargeUseCase } from '../usecases/save-charge.factory'
 import { makeSaveChargeTraceUseCase } from '../usecases/save-charge-trace.factory'
 import { CryptoJsAdapter } from '@/infra/adapters/cryptoJs.adapter'
+import { makeSaveRequestUseCase } from '../usecases/save-request.factory'
+import { makeUpdateRequestUseCase } from '../usecases/update-request.factory'
 
 export const makeSaveChargeController = (): SaveChargeController => {
   return new SaveChargeController(
@@ -15,6 +17,8 @@ export const makeSaveChargeController = (): SaveChargeController => {
     makeSaveCreditCardUseCase(),
     makeSaveChargeUseCase(),
     makeSaveChargeTraceUseCase(),
-    new CryptoJsAdapter(process.env.ENCRYPTION_KEY!)
+    new CryptoJsAdapter(process.env.ENCRYPTION_KEY!),
+    makeSaveRequestUseCase(),
+    makeUpdateRequestUseCase()
   )
 }
