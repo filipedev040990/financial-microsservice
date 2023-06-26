@@ -11,6 +11,7 @@ import constants from '@/infra/constants'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
 import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
 import { SaveRequestUseCaseInterface } from '@/application/contratcs/save-request-usecase.interface'
+import { UpdateRequestUseCaseInterface } from '@/application/contratcs/update-request-usecase.interface'
 
 export class SaveChargeController implements ControllerInterface {
   constructor (
@@ -21,12 +22,13 @@ export class SaveChargeController implements ControllerInterface {
     private readonly saveChargeUseCase: SaveChargeUseCaseInterface,
     private readonly saveChargeTraceUseCase: SaveChargeTraceUseCaseInterface,
     private readonly encryptData: EncryptDataInterface,
-    private readonly saveRequestUseCase: SaveRequestUseCaseInterface
+    private readonly saveRequestUseCase: SaveRequestUseCaseInterface,
+    private readonly updateRequestUseCase: UpdateRequestUseCaseInterface
   ) {}
 
   async execute (input: HttpRequest): Promise<any> {
     try {
-      await this.saveRequestUseCase.execute({
+      const requestId = await this.saveRequestUseCase.execute({
         path: input.originalUrl,
         method: input.method as string,
         input: JSON.stringify(input.body)
@@ -61,6 +63,8 @@ export class SaveChargeController implements ControllerInterface {
         chargeId,
         status: constants.CHARGE_STATUS_CREATED
       })
+
+      await this.updateRequestUseCase.execute({ id: requestId, output: JSON.stringify({}), status: 201 })
 
       return success(201, null)
     } catch (error) {

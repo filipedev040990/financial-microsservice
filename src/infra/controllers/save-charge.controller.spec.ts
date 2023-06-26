@@ -11,6 +11,7 @@ import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-ch
 import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
 import { serverError } from '@/shared/helpers/http.helper'
 import { SaveRequestUseCaseInterface } from '@/application/contratcs/save-request-usecase.interface'
+import { UpdateRequestUseCaseInterface } from '@/application/contratcs/update-request-usecase.interface'
 
 const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
 const saveClientUseCase = mock<SaveClientUseCaseInterface>()
@@ -20,6 +21,7 @@ const saveChargeUseCase = mock<SaveChargeUseCaseInterface>()
 const saveChargeTraceUseCase = mock<SaveChargeTraceUseCaseInterface>()
 const encryptData = mock<EncryptDataInterface>()
 const saveRequestUseCase = mock<SaveRequestUseCaseInterface>()
+const updateRequestUseCase = mock<UpdateRequestUseCaseInterface>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
@@ -30,7 +32,7 @@ describe('SaveChargeController', () => {
   let charge: any
 
   beforeAll(() => {
-    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, encryptData, saveRequestUseCase)
+    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, encryptData, saveRequestUseCase, updateRequestUseCase)
 
     schemaValidator.validate.mockReturnValue({ success: true })
 
@@ -89,6 +91,7 @@ describe('SaveChargeController', () => {
         remoteAddress: 'any ip'
       }
     }
+    saveRequestUseCase.execute.mockResolvedValue('any request id')
   })
 
   test('should call SchemaValidator.validate', async () => {
@@ -195,6 +198,17 @@ describe('SaveChargeController', () => {
       path: 'any url',
       method: 'any method',
       input: JSON.stringify(input.body)
+    })
+  })
+
+  test('should call updateRequestUseCase once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(updateRequestUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(updateRequestUseCase.execute).toHaveBeenCalledWith({
+      id: 'any request id',
+      output: JSON.stringify({}),
+      status: 201
     })
   })
 })
