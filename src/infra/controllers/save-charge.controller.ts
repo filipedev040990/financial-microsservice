@@ -1,6 +1,6 @@
 import { ControllerInterface } from '@/application/contratcs/controller.interface'
 import { SchemaValidatorInterface } from '@/application/contratcs/schema-validator.interface'
-import { HttpRequest } from '@/shared/types'
+import { HttpRequest, HttpResponse } from '@/shared/types'
 import { chargeSchema } from '@/infra/schemas/charge.schema'
 import { badRequest, serverError, success } from '@/shared/helpers/http.helper'
 import { SaveClientUseCaseInterface } from '@/application/contratcs/save-client-usecase.interface'
@@ -26,14 +26,14 @@ export class SaveChargeController implements ControllerInterface {
     private readonly updateRequestUseCase: UpdateRequestUseCaseInterface
   ) {}
 
-  async execute (input: HttpRequest): Promise<any> {
-    try {
-      const requestId = await this.saveRequestUseCase.execute({
-        path: input.originalUrl,
-        method: input.method as string,
-        input: JSON.stringify(input.body)
-      })
+  async execute (input: HttpRequest): Promise<HttpResponse> {
+    const requestId = await this.saveRequestUseCase.execute({
+      path: input.originalUrl,
+      method: input.method as string,
+      input: JSON.stringify(input.body)
+    })
 
+    try {
       const validateSchema = this.schemaValidator.validate(chargeSchema, input.body)
       if (!validateSchema.success) {
         return badRequest(validateSchema.error)
@@ -64,10 +64,13 @@ export class SaveChargeController implements ControllerInterface {
         status: constants.CHARGE_STATUS_CREATED
       })
 
-      await this.updateRequestUseCase.execute({ id: requestId, output: JSON.stringify({}), status: 201 })
+      const output = success(201, null)
 
-      return success(201, null)
+      await this.updateRequestUseCase.execute({ id: requestId, output: JSON.stringify(output), status: 201 })
+
+      return output
     } catch (error) {
+      await this.updateRequestUseCase.execute({ id: requestId, output: JSON.stringify(error), status: 500 })
       return serverError(error)
     }
   }

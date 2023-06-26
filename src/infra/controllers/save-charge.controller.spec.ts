@@ -207,8 +207,23 @@ describe('SaveChargeController', () => {
     expect(updateRequestUseCase.execute).toHaveBeenCalledTimes(1)
     expect(updateRequestUseCase.execute).toHaveBeenCalledWith({
       id: 'any request id',
-      output: JSON.stringify({}),
+      output: JSON.stringify({ statusCode: 201, body: null }),
       status: 201
+    })
+  })
+
+  test('should call updateRequestUseCase when any usecase throws', async () => {
+    saveChargeTraceUseCase.execute.mockImplementationOnce(() => {
+      throw new Error()
+    })
+
+    await sut.execute(input)
+
+    expect(updateRequestUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(updateRequestUseCase.execute).toHaveBeenCalledWith({
+      id: 'any request id',
+      output: JSON.stringify(new Error()),
+      status: 500
     })
   })
 })
