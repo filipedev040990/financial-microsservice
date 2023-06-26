@@ -5,7 +5,13 @@ import { Request, Response } from 'express'
 export const expressRouteAdapter = (controller: ControllerInterface) => {
   return async (req: Request, res: Response) => {
     const input: HttpRequest = {
-      body: req.body
+      originalUrl: req?.originalUrl,
+      method: req?.method,
+      socket: req?.socket,
+      ip: req?.ip,
+      headers: req?.headers,
+      params: req?.params,
+      body: req?.body
     }
 
     const { statusCode, body }: HttpResponse = await controller.execute(input)
