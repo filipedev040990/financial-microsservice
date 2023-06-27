@@ -10,6 +10,7 @@ export namespace SaveChargeRepositoryInterface {
     status: string
     totalValue: number
     paymentMethod: string
+    processingAttempts: number
     createdAt: Date
   }
 }
@@ -35,6 +36,7 @@ export namespace UpdateChargeStatusRepositoryInterface {
   export type Input = {
     id: string
     status: string
+    processingAttempts?: number
     updatedAt: Date
   }
 }

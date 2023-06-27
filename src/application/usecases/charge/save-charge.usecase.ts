@@ -18,6 +18,7 @@ export class SaveChargeUseCase implements SaveChargeUseCaseInterface {
       paymentMethod: input.paymentMethod,
       status: input.status,
       totalValue: input.totalValue,
+      processingAttempts: 0,
       createdAt: new Date()
     })
 

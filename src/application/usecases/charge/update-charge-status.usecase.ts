@@ -5,8 +5,7 @@ export class UpdateChargeStatusUseCase implements UpdateChargeStatusUseCaseInter
   constructor (private readonly repository: UpdateChargeStatusRepositoryInterface) {}
   async execute (input: UpdateChargeStatusUseCaseInterface.Input): Promise<void> {
     await this.repository.updateStatus({
-      id: input.id,
-      status: input.status,
+      ...input,
       updatedAt: new Date()
     })
   }

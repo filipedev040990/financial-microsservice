@@ -49,6 +49,7 @@ describe('SaveChargeUseCase', () => {
       paymentMethod: 'credit_card',
       status: 'waiting',
       totalValue: 10000,
+      processingAttempts: 0,
       createdAt: new Date()
     })
   })

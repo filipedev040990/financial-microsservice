@@ -34,4 +34,18 @@ describe('UpdateChargeStatusUseCase', () => {
       updatedAt: new Date()
     })
   })
+
+  test('should call ChargeRepository.updateStatus once and with processingAttempts', async () => {
+    input.processingAttempts = 1
+
+    await sut.execute(input)
+
+    expect(repository.updateStatus).toHaveBeenCalledTimes(1)
+    expect(repository.updateStatus).toHaveBeenCalledWith({
+      id: 'anyChargeId',
+      status: 'anyStatus',
+      processingAttempts: 1,
+      updatedAt: new Date()
+    })
+  })
 })
