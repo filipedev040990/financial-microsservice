@@ -1,14 +1,15 @@
 const config = {
   rabbitmq: {
-    exchange: [{
+    exchanges: [{
       name: 'payments',
-      bindQueues: ['payments_processed'],
+      bindQueues: ['financial_payments_processed'],
       routingKey: 'payments_processed'
     }, {
       name: 'payments',
       bindQueues: ['payment_to_process'],
       routingKey: 'payment_to_process'
-    }]
+    }],
+    uri: 'amqp://admin:admin@rabbitmq:5672'
   }
 }
 

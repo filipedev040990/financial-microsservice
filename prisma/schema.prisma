@@ -55,6 +55,7 @@ model Charge {
   totalValue    Int
   paymentMethod String
   createdAt     DateTime
+  updatedAt     DateTime?
   ChargeTrace   ChargeTrace[]
 
   @@map("charges")
