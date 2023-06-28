@@ -54,7 +54,7 @@ export namespace GetChargeByIdRepositoryInterface {
     totalValue: number
     paymentMethod: string
     createdAt: Date
-    updatedAt: Date
+    updatedAt: Date | null
     processingAttempts: number
   }
 }

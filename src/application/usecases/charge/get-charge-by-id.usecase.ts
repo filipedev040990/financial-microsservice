@@ -4,7 +4,7 @@ import { GetChargeByIdUseCaseInterface } from '@/application/contratcs/get-charg
 export class GetChargeByIdUseCase implements GetChargeByIdUseCaseInterface {
   constructor (private readonly repository: GetChargeByIdRepositoryInterface) {}
   async execute (id: string): Promise<GetChargeByIdUseCaseInterface.Output | undefined> {
-    await this.repository.getById(id)
-    return undefined
+    const charge = await this.repository.getById(id)
+    return charge ?? undefined
   }
 }
