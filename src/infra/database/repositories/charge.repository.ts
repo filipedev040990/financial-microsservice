@@ -1,7 +1,7 @@
-import { SaveChargeRepositoryInterface, UpdateChargeStatusRepositoryInterface } from '@/application/contratcs/charge-repository.interface'
+import { GetChargeByIdRepositoryInterface, SaveChargeRepositoryInterface, UpdateChargeStatusRepositoryInterface } from '@/application/contratcs/charge-repository.interface'
 import { prismaClient } from '../prisma-client.repository'
 
-export class ChargeRepository implements SaveChargeRepositoryInterface, UpdateChargeStatusRepositoryInterface {
+export class ChargeRepository implements SaveChargeRepositoryInterface, UpdateChargeStatusRepositoryInterface, GetChargeByIdRepositoryInterface {
   async save (data: SaveChargeRepositoryInterface.Input): Promise<void> {
     await prismaClient.charge.create({ data })
   }
@@ -16,5 +16,13 @@ export class ChargeRepository implements SaveChargeRepositoryInterface, UpdateCh
         id: input.id
       }
     })
+  }
+
+  async getById (id: string): Promise<GetChargeByIdRepositoryInterface.Output | undefined> {
+    const charge = await prismaClient.charge.findUnique({
+      where: { id }
+    })
+
+    return charge ?? undefined
   }
 }

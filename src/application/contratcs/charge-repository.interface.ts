@@ -42,7 +42,7 @@ export namespace UpdateChargeStatusRepositoryInterface {
 }
 
 export interface GetChargeByIdRepositoryInterface {
-  getById(id: string): Promise<GetChargeByIdRepositoryInterface.Output> | undefined
+  getById(id: string): Promise<GetChargeByIdRepositoryInterface.Output | undefined>
 }
 
 export namespace GetChargeByIdRepositoryInterface {
