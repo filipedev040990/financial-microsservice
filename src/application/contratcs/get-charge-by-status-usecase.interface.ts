@@ -1,5 +1,5 @@
 export interface GetChargeByStatusUseCaseInterface {
-  execute(status: string): Promise<GetChargeByStatusUseCaseInterface.Output | undefined>
+  execute(status: string): Promise<GetChargeByStatusUseCaseInterface.Output [] | undefined>
 }
 
 export namespace GetChargeByStatusUseCaseInterface {

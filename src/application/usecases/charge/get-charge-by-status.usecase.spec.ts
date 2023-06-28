@@ -10,7 +10,7 @@ describe('GetChargeByStatusUseCase', () => {
 
   beforeAll(() => {
     sut = new GetChargeByStatusUseCase(repository)
-    repository.getByStatus.mockResolvedValue({
+    repository.getByStatus.mockResolvedValue([{
       id: 'anyChargeId',
       clientId: 'anyClientId',
       payerId: 'anyPayerId',
@@ -20,7 +20,7 @@ describe('GetChargeByStatusUseCase', () => {
       createdAt: new Date('2023-01-01 00:00:00'),
       updatedAt: null,
       processingAttempts: 1
-    })
+    }])
   })
 
   test('should call ChargeRepository.getByStatus once and with correct id', async () => {
@@ -41,7 +41,7 @@ describe('GetChargeByStatusUseCase', () => {
   test('should return a Charge', async () => {
     const output = await sut.execute(status)
 
-    expect(output).toEqual({
+    expect(output).toEqual([{
       id: 'anyChargeId',
       clientId: 'anyClientId',
       payerId: 'anyPayerId',
@@ -51,6 +51,6 @@ describe('GetChargeByStatusUseCase', () => {
       createdAt: new Date('2023-01-01 00:00:00'),
       updatedAt: null,
       processingAttempts: 1
-    })
+    }])
   })
 })

@@ -3,7 +3,7 @@ import { GetChargeByStatusUseCaseInterface } from '@/application/contratcs/get-c
 
 export class GetChargeByStatusUseCase implements GetChargeByStatusUseCaseInterface {
   constructor (private readonly repository: GetChargeByStatusRepositoryInterface) {}
-  async execute (status: string): Promise<GetChargeByStatusUseCaseInterface.Output | undefined> {
+  async execute (status: string): Promise<GetChargeByStatusUseCaseInterface.Output [] | undefined> {
     const charge = await this.repository.getByStatus(status)
     return charge ?? undefined
   }

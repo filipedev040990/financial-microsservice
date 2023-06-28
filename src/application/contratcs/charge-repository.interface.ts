@@ -59,7 +59,7 @@ export namespace GetChargeByIdRepositoryInterface {
   }
 }
 export interface GetChargeByStatusRepositoryInterface {
-  getByStatus(status: string): Promise<GetChargeByStatusRepositoryInterface.Output | undefined>
+  getByStatus(status: string): Promise<GetChargeByStatusRepositoryInterface.Output [] | undefined>
 }
 
 export namespace GetChargeByStatusRepositoryInterface {
@@ -73,5 +73,50 @@ export namespace GetChargeByStatusRepositoryInterface {
     createdAt: Date
     updatedAt: Date | null
     processingAttempts: number
+  }
+}
+
+export interface GetChargeToProcessRepositoryInterface {
+  getToProcess(status: string): Promise<GetChargeToProcessRepositoryInterface.Output [] | undefined>
+}
+
+export namespace GetChargeToProcessRepositoryInterface {
+  export type Output = {
+    client: {
+      id: string
+      identifier: string
+      name: string
+      email: string
+      document: string
+      birthDate: Date
+      phoneNumber: string
+    }
+    payer: {
+      id: string
+      personType: string
+      name: string
+      email: string
+      document: string
+      phoneNumber: string
+      cep: string
+      street: string
+      number: string
+      complement?: string
+      neighborhood: string
+      city: string
+      state: string
+    }
+    creditCard: {
+      id: string
+      payerId: string
+      encryptedData: string
+    }
+    charge: {
+      id: string
+      clientId: string
+      payerId: string
+      totalValue: number
+      paymentMethod: string
+    }
   }
 }
