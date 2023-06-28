@@ -40,3 +40,21 @@ export namespace UpdateChargeStatusRepositoryInterface {
     updatedAt: Date
   }
 }
+
+export interface GetChargeByIdRepositoryInterface {
+  getById(id: string): Promise<GetChargeByIdRepositoryInterface.Output> | undefined
+}
+
+export namespace GetChargeByIdRepositoryInterface {
+  export type Output = {
+    id: string
+    clientId: string
+    payerId: string
+    status: string
+    totalValue: number
+    paymentMethod: string
+    createdAt: Date
+    updatedAt: Date
+    processingAttempts: number
+  }
+}
