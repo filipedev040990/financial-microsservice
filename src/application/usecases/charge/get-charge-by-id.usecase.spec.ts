@@ -18,4 +18,10 @@ describe('GetChargeByIdUseCase', () => {
     expect(repository.getById).toHaveBeenCalledTimes(1)
     expect(repository.getById).toHaveBeenCalledWith('anyId')
   })
+
+  test('should return undefined if ChargeRepository.getById returns undefined', async () => {
+    const output = await sut.execute(id)
+
+    expect(output).toBeUndefined()
+  })
 })
