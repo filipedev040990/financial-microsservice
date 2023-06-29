@@ -23,7 +23,7 @@ export class RabbitmqAdapter implements QueueInterface {
   }
 
   async publish (exchange: string, routingKey: string, message: string): Promise<boolean> {
-    return this.channel.publish(exchange, routingKey, Buffer.from(message))
+    return this.channel.publish(exchange, routingKey, Buffer.from(message), { persistent: true })
   }
 
   async close (): Promise<void> {
