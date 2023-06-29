@@ -24,6 +24,18 @@ export class ConsumePaymentProcessedQueue {
             newStatus = constants.CHARGE_STATUS_WAITING
           } else {
             newStatus = constants.CHARGE_STATUS_UNPAID
+
+            const message = {
+              subject: constants.UNCONFIRMED_PAYMENT_NOTIFICATION_SUBJECT,
+              to: response.client.email,
+              body: `Olá, ${response.client.name as string} tudo bem? Cobrança recusada pela operadora de cartão referente à compra do seu curso. <br> Motivo: <br> ${response.reason as string}.<br> Tente realizar um novo pagamento.`
+            }
+
+            await this.queue.publish(
+              constants.RABBITMQ_EXCHANGE_TO_PROCESS,
+              constants.RABBITMQ_ROUTING_NOTIFICATION,
+              JSON.stringify(message)
+            )
           }
         }
 

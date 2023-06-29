@@ -9,5 +9,7 @@ export default {
   MAXIMUM_PROCESSING_ATTEMPTS: 3,
   RABBITMQ_EXCHANGE_TO_PROCESS: 'payments',
   RABBITMQ_ROUTING_KEY_TO_PROCESS: 'payment_to_process',
+  RABBITMQ_ROUTING_NOTIFICATION: 'notify_unconfirmed_payment',
+  UNCONFIRMED_PAYMENT_NOTIFICATION_SUBJECT: 'Falha no pagamento',
   RABBITMQ_URI: 'amqp://admin:admin@rabbitmq:5672'
 }
