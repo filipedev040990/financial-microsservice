@@ -10,7 +10,8 @@ export class ChargeRepository implements SaveChargeRepositoryInterface, UpdateCh
     await prismaClient.charge.update({
       data: {
         status: input.status,
-        updatedAt: input.updatedAt
+        updatedAt: input.updatedAt,
+        processingAttempts: input.processingAttempts
       },
       where: {
         id: input.id
@@ -36,6 +37,7 @@ export class ChargeRepository implements SaveChargeRepositoryInterface, UpdateCh
         payerId: true,
         totalValue: true,
         paymentMethod: true,
+        processingAttempts: true,
         client: {
           select: {
             id: true,
@@ -71,6 +73,9 @@ export class ChargeRepository implements SaveChargeRepositoryInterface, UpdateCh
             }
           }
         }
+      },
+      where: {
+        status
       }
     })
 
@@ -82,7 +87,8 @@ export class ChargeRepository implements SaveChargeRepositoryInterface, UpdateCh
             clientId: res.clientId,
             payerId: res.payerId,
             totalValue: res.totalValue,
-            paymentMethod: res.paymentMethod
+            paymentMethod: res.paymentMethod,
+            processingAttempts: res.processingAttempts
           },
           client: res.client,
           payer: {

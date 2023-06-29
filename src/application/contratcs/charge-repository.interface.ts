@@ -117,6 +117,7 @@ export namespace GetChargeToProcessRepositoryInterface {
       payerId: string
       totalValue: number
       paymentMethod: string
+      processingAttempts: number
     }
   }
 }

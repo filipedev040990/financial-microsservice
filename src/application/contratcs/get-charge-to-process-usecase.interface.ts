@@ -39,6 +39,7 @@ export namespace GetChargeToProcessUseCaseInterface {
       payerId: string
       totalValue: number
       paymentMethod: string
+      processingAttempts: number
     }
   }
 }

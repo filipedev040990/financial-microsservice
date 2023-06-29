@@ -12,40 +12,41 @@ describe('GetChargeToProcessUseCase', () => {
     sut = new GetChargeToProcessUseCase(status, repository)
     repository.getToProcess.mockResolvedValue([{
       client: {
-        id: '',
-        identifier: '',
-        name: '',
-        email: '',
-        document: '',
+        id: 'anyID',
+        identifier: 'anyIdentifier',
+        name: 'AnyName',
+        email: 'anyEmail',
+        document: 'anyDocument',
         birthDate: new Date('1990-01-01'),
         phoneNumber: ''
       },
       payer: {
-        id: '',
-        personType: '',
-        name: '',
-        email: '',
-        document: '',
-        phoneNumber: '',
-        cep: '',
-        street: '',
-        number: '',
-        complement: '',
-        neighborhood: '',
-        city: '',
-        state: ''
+        id: 'anyPayerId',
+        personType: 'anyPersonType',
+        name: 'AnyPayerName',
+        email: 'anyPayerEmail',
+        document: 'anyPayerDocument',
+        phoneNumber: 'anyPayerPhoneNumber',
+        cep: 'anyCep',
+        street: 'anyStreet',
+        number: 'anyNumber',
+        complement: 'anyComplement',
+        neighborhood: 'anyNeighnorhood',
+        city: 'AnyCityi',
+        state: 'anyState'
       },
       creditCard: {
-        id: '',
-        payerId: '',
-        encryptedData: ''
+        id: 'anyCreditCardId',
+        payerId: 'anyPayerId',
+        encryptedData: 'anyEncryptedData'
       },
       charge: {
-        id: '',
-        clientId: '',
-        payerId: '',
+        id: 'anyChargeId',
+        clientId: 'anyID',
+        payerId: 'anyPayerId',
         totalValue: 1500,
-        paymentMethod: ''
+        paymentMethod: 'anyPaymentMethod',
+        processingAttempts: 10
       }
     }])
   })
@@ -70,40 +71,41 @@ describe('GetChargeToProcessUseCase', () => {
 
     expect(output).toEqual([{
       client: {
-        id: '',
-        identifier: '',
-        name: '',
-        email: '',
-        document: '',
+        id: 'anyID',
+        identifier: 'anyIdentifier',
+        name: 'AnyName',
+        email: 'anyEmail',
+        document: 'anyDocument',
         birthDate: new Date('1990-01-01'),
         phoneNumber: ''
       },
       payer: {
-        id: '',
-        personType: '',
-        name: '',
-        email: '',
-        document: '',
-        phoneNumber: '',
-        cep: '',
-        street: '',
-        number: '',
-        complement: '',
-        neighborhood: '',
-        city: '',
-        state: ''
+        id: 'anyPayerId',
+        personType: 'anyPersonType',
+        name: 'AnyPayerName',
+        email: 'anyPayerEmail',
+        document: 'anyPayerDocument',
+        phoneNumber: 'anyPayerPhoneNumber',
+        cep: 'anyCep',
+        street: 'anyStreet',
+        number: 'anyNumber',
+        complement: 'anyComplement',
+        neighborhood: 'anyNeighnorhood',
+        city: 'AnyCityi',
+        state: 'anyState'
       },
       creditCard: {
-        id: '',
-        payerId: '',
-        encryptedData: ''
+        id: 'anyCreditCardId',
+        payerId: 'anyPayerId',
+        encryptedData: 'anyEncryptedData'
       },
       charge: {
-        id: '',
-        clientId: '',
-        payerId: '',
+        id: 'anyChargeId',
+        clientId: 'anyID',
+        payerId: 'anyPayerId',
         totalValue: 1500,
-        paymentMethod: ''
+        paymentMethod: 'anyPaymentMethod',
+        processingAttempts: 10
       }
     }])
   })
