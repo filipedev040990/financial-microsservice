@@ -68,7 +68,7 @@ export class ChargeRepository implements SaveChargeRepositoryInterface, UpdateCh
               select: {
                 id: true,
                 payerId: true,
-                encryptedData: true
+                externalIdentifier: true
               }
             }
           }
@@ -109,7 +109,7 @@ export class ChargeRepository implements SaveChargeRepositoryInterface, UpdateCh
           creditCard: {
             id: res.payer.CreditCard!.id,
             payerId: res.payer.CreditCard!.payerId,
-            encryptedData: res.payer.CreditCard!.encryptedData
+            externalIdentifier: res.payer.CreditCard!.externalIdentifier
           }
         })
         return output

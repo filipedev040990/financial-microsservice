@@ -18,7 +18,8 @@ const config = {
   application: {
     appId: '27621c52-bfcb-4428-bd25-026ff0cf1209',
     secretKey: 'financial-microsservice'
-  }
+  },
+  cardEncryptorUrl: 'http://card-encryptor:3000/api/v1'
 }
 
 export { config }

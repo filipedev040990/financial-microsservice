@@ -14,6 +14,7 @@ import { SaveRequestUseCaseInterface } from '@/application/contratcs/save-reques
 import { UpdateRequestUseCaseInterface } from '@/application/contratcs/update-request-usecase.interface'
 import { CacheInterface } from '@/application/contratcs/cache'
 import { GetTokenInterfaceUseCase } from '@/application/contratcs/get-token-api.interface'
+import { SaveCardExternalInterface } from '@/application/contratcs/save-card-external.interface'
 
 const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
 const saveClientUseCase = mock<SaveClientUseCaseInterface>()
@@ -26,6 +27,7 @@ const saveRequestUseCase = mock<SaveRequestUseCaseInterface>()
 const updateRequestUseCase = mock<UpdateRequestUseCaseInterface>()
 const cache = mock<CacheInterface>()
 const getTokenUseCase = mock<GetTokenInterfaceUseCase>()
+const saveCardExternalUseCase = mock<SaveCardExternalInterface>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
@@ -36,7 +38,7 @@ describe('SaveChargeController', () => {
   let charge: any
 
   beforeAll(() => {
-    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, saveRequestUseCase, updateRequestUseCase, getTokenUseCase)
+    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, saveRequestUseCase, updateRequestUseCase, getTokenUseCase, saveCardExternalUseCase)
 
     schemaValidator.validate.mockReturnValue({ success: true })
 
@@ -46,6 +48,7 @@ describe('SaveChargeController', () => {
     encryptData.encrypt.mockReturnValue('AnyExternalIdentifier')
     cache.get.mockReturnValue('anyToken')
     getTokenUseCase.execute.mockResolvedValue('anyToken')
+    saveCardExternalUseCase.execute.mockResolvedValue('anyCardIdentifier')
 
     client = {
       identifier: 'anyIdentifier',
@@ -73,8 +76,9 @@ describe('SaveChargeController', () => {
     creditCard = {
       brand: 'anyBrand',
       number: '1234567891021365',
-      monthExpiration: '12',
-      yearExpiration: '2023'
+      expiryMonth: '12',
+      expiryYear: '2023',
+      cvv: '123'
     }
 
     input = {
@@ -138,7 +142,7 @@ describe('SaveChargeController', () => {
     expect(saveCreditCardUseCase.execute).toHaveBeenCalledTimes(1)
     expect(saveCreditCardUseCase.execute).toHaveBeenCalledWith({
       payerId: 'anyPayerId',
-      externalIdentifier: 'anyToken'
+      externalIdentifier: 'anyCardIdentifier'
     })
   })
 
@@ -228,5 +232,18 @@ describe('SaveChargeController', () => {
 
     expect(getTokenUseCase.execute).toHaveBeenCalledTimes(1)
     expect(getTokenUseCase.execute).toHaveBeenCalledWith('cardEncryptorToken')
+  })
+
+  test('should call SaveCardExternal once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(saveCardExternalUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(saveCardExternalUseCase.execute).toHaveBeenCalledWith({
+      brand: 'anyBrand',
+      number: '1234567891021365',
+      expiryMonth: '12',
+      expiryYear: '2023',
+      cvv: '123'
+    }, 'anyToken')
   })
 })

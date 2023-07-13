@@ -109,7 +109,7 @@ export namespace GetChargeToProcessRepositoryInterface {
     creditCard: {
       id: string
       payerId: string
-      encryptedData: string
+      externalIdentifier: string
     }
     charge: {
       id: string

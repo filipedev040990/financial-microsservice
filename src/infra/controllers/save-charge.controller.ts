@@ -13,6 +13,7 @@ import { SaveRequestUseCaseInterface } from '@/application/contratcs/save-reques
 import { UpdateRequestUseCaseInterface } from '@/application/contratcs/update-request-usecase.interface'
 import { config } from '../config'
 import { GetTokenInterfaceUseCase } from '@/application/contratcs/get-token-api.interface'
+import { SaveCardExternalInterface } from '@/application/contratcs/save-card-external.interface'
 
 export class SaveChargeController implements ControllerInterface {
   constructor (
@@ -24,7 +25,8 @@ export class SaveChargeController implements ControllerInterface {
     private readonly saveChargeTraceUseCase: SaveChargeTraceUseCaseInterface,
     private readonly saveRequestUseCase: SaveRequestUseCaseInterface,
     private readonly updateRequestUseCase: UpdateRequestUseCaseInterface,
-    private readonly getTokenUseCase: GetTokenInterfaceUseCase
+    private readonly getTokenUseCase: GetTokenInterfaceUseCase,
+    private readonly saveCardExternalUseCase: SaveCardExternalInterface
   ) {}
 
   async execute (input: HttpRequest): Promise<HttpResponse> {
@@ -40,12 +42,14 @@ export class SaveChargeController implements ControllerInterface {
         return badRequest(validateSchema.error)
       }
 
-      const { client, payer, paymentMethod, totalValue } = input.body
+      const { client, payer, paymentMethod, creditCard, totalValue } = input.body
 
       const clientId = await this.saveClientUseCase.execute(client)
       const payerId = await this.savePayerUseCase.execute(payer)
 
-      const externalIdentifier = await this.getTokenUseCase.execute(config.cache.cardEncryptorKey)
+      const token = await this.getTokenUseCase.execute(config.cache.cardEncryptorKey)
+
+      const externalIdentifier = await this.saveCardExternalUseCase.execute(creditCard, token)
 
       await this.saveCreditCardUseCase.execute({
         payerId,

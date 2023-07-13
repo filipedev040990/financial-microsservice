@@ -38,7 +38,7 @@ describe('GetChargeToProcessUseCase', () => {
       creditCard: {
         id: 'anyCreditCardId',
         payerId: 'anyPayerId',
-        encryptedData: 'anyEncryptedData'
+        externalIdentifier: 'anyEncryptedData'
       },
       charge: {
         id: 'anyChargeId',
@@ -97,7 +97,7 @@ describe('GetChargeToProcessUseCase', () => {
       creditCard: {
         id: 'anyCreditCardId',
         payerId: 'anyPayerId',
-        encryptedData: 'anyEncryptedData'
+        externalIdentifier: 'anyEncryptedData'
       },
       charge: {
         id: 'anyChargeId',

@@ -1,4 +1,4 @@
 export interface CacheInterface {
-  set(input: any): boolean
+  set(key: string, data: any, ttl: number): boolean
   get(key: string): any
 }

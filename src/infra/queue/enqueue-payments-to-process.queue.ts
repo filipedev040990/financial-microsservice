@@ -31,7 +31,7 @@ type EnqueuePaymentsToProcessInput = {
   creditCard: {
     id: string
     payerId: string
-    encryptedData: string
+    externalIdentifier: string
   }
   charge: {
     id: string
@@ -112,7 +112,7 @@ export class EnqueuePaymentsToProcess {
       creditCard: {
         id: charge.creditCard.id,
         payerId: charge.creditCard.payerId,
-        encryptedData: charge.creditCard.encryptedData
+        externalIdentifier: charge.creditCard.externalIdentifier
       }
     }
   }

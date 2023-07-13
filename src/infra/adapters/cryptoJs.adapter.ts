@@ -9,11 +9,11 @@ export class CryptoJsAdapter implements EncryptDataInterface, DecryptDataInterfa
     const key = CryptoJS.enc.Utf8.parse(this.key)
     const data = JSON.stringify(input)
 
-    const encryptedData = CryptoJS.AES.encrypt(data, key, {
+    const externalIdentifier = CryptoJS.AES.encrypt(data, key, {
       mode: CryptoJS.mode.ECB
     })
 
-    return encryptedData.toString()
+    return externalIdentifier.toString()
   }
 
   decrypt (input: string): any {
