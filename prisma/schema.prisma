@@ -73,11 +73,11 @@ model ChargeTrace {
 }
 
 model CreditCard {
-  id            String   @id
-  payerId       String   @unique
-  payer         Payer    @relation(fields: [payerId], references: [id])
-  encryptedData String
-  createdAt     DateTime
+  id                 String   @id
+  payerId            String   @unique
+  payer              Payer    @relation(fields: [payerId], references: [id])
+  externalIdentifier String
+  createdAt          DateTime
 
   @@map("cards")
 }

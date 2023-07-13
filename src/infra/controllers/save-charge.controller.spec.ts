@@ -12,6 +12,8 @@ import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.inter
 import { serverError } from '@/shared/helpers/http.helper'
 import { SaveRequestUseCaseInterface } from '@/application/contratcs/save-request-usecase.interface'
 import { UpdateRequestUseCaseInterface } from '@/application/contratcs/update-request-usecase.interface'
+import { CacheInterface } from '@/application/contratcs/cache'
+import { GetTokenInterfaceUseCase } from '@/application/contratcs/get-token-api.interface'
 
 const schemaValidator = mock <SchemaValidatorInterface <typeof chargeSchema>>()
 const saveClientUseCase = mock<SaveClientUseCaseInterface>()
@@ -22,6 +24,8 @@ const saveChargeTraceUseCase = mock<SaveChargeTraceUseCaseInterface>()
 const encryptData = mock<EncryptDataInterface>()
 const saveRequestUseCase = mock<SaveRequestUseCaseInterface>()
 const updateRequestUseCase = mock<UpdateRequestUseCaseInterface>()
+const cache = mock<CacheInterface>()
+const getTokenUseCase = mock<GetTokenInterfaceUseCase>()
 
 describe('SaveChargeController', () => {
   let sut: SaveChargeController
@@ -32,14 +36,16 @@ describe('SaveChargeController', () => {
   let charge: any
 
   beforeAll(() => {
-    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, encryptData, saveRequestUseCase, updateRequestUseCase)
+    sut = new SaveChargeController(schemaValidator, saveClientUseCase, savePayerUseCase, saveCreditCardUseCase, saveChargeUseCase, saveChargeTraceUseCase, saveRequestUseCase, updateRequestUseCase, getTokenUseCase)
 
     schemaValidator.validate.mockReturnValue({ success: true })
 
     saveClientUseCase.execute.mockResolvedValue('anyClientId')
     savePayerUseCase.execute.mockResolvedValue('anyPayerId')
     saveChargeUseCase.execute.mockResolvedValue('anyChargeId')
-    encryptData.encrypt.mockReturnValue('AnyEncryptedData')
+    encryptData.encrypt.mockReturnValue('AnyExternalIdentifier')
+    cache.get.mockReturnValue('anyToken')
+    getTokenUseCase.execute.mockResolvedValue('anyToken')
 
     client = {
       identifier: 'anyIdentifier',
@@ -132,7 +138,7 @@ describe('SaveChargeController', () => {
     expect(saveCreditCardUseCase.execute).toHaveBeenCalledTimes(1)
     expect(saveCreditCardUseCase.execute).toHaveBeenCalledWith({
       payerId: 'anyPayerId',
-      encryptedData: 'AnyEncryptedData'
+      externalIdentifier: 'anyToken'
     })
   })
 
@@ -156,18 +162,6 @@ describe('SaveChargeController', () => {
     expect(saveChargeTraceUseCase.execute).toHaveBeenCalledWith({
       chargeId: 'anyChargeId',
       status: 'created'
-    })
-  })
-
-  test('should call EncryptData once and with correct values', async () => {
-    await sut.execute(input)
-
-    expect(encryptData.encrypt).toHaveBeenCalledTimes(1)
-    expect(encryptData.encrypt).toHaveBeenCalledWith({
-      brand: 'anyBrand',
-      number: '1234567891021365',
-      monthExpiration: '12',
-      yearExpiration: '2023'
     })
   })
 
@@ -225,5 +219,14 @@ describe('SaveChargeController', () => {
       output: JSON.stringify(new Error()),
       status: 500
     })
+  })
+
+  test('should call getToken when cache is empty', async () => {
+    cache.get.mockReturnValueOnce(null)
+
+    await sut.execute(input)
+
+    expect(getTokenUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(getTokenUseCase.execute).toHaveBeenCalledWith('cardEncryptorToken')
   })
 })

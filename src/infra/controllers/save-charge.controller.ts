@@ -9,9 +9,10 @@ import { SaveCreditCardUseCaseInterface } from '@/application/contratcs/save-cre
 import { SaveChargeUseCaseInterface } from '@/application/contratcs/save-charge-usecase.interface'
 import constants from '@/infra/constants'
 import { SaveChargeTraceUseCaseInterface } from '@/application/contratcs/save-charge-trace-usecase.interface'
-import { EncryptDataInterface } from '@/application/contratcs/encrypt-data.interface'
 import { SaveRequestUseCaseInterface } from '@/application/contratcs/save-request-usecase.interface'
 import { UpdateRequestUseCaseInterface } from '@/application/contratcs/update-request-usecase.interface'
+import { config } from '../config'
+import { GetTokenInterfaceUseCase } from '@/application/contratcs/get-token-api.interface'
 
 export class SaveChargeController implements ControllerInterface {
   constructor (
@@ -21,9 +22,9 @@ export class SaveChargeController implements ControllerInterface {
     private readonly saveCreditCardUseCase: SaveCreditCardUseCaseInterface,
     private readonly saveChargeUseCase: SaveChargeUseCaseInterface,
     private readonly saveChargeTraceUseCase: SaveChargeTraceUseCaseInterface,
-    private readonly encryptData: EncryptDataInterface,
     private readonly saveRequestUseCase: SaveRequestUseCaseInterface,
-    private readonly updateRequestUseCase: UpdateRequestUseCaseInterface
+    private readonly updateRequestUseCase: UpdateRequestUseCaseInterface,
+    private readonly getTokenUseCase: GetTokenInterfaceUseCase
   ) {}
 
   async execute (input: HttpRequest): Promise<HttpResponse> {
@@ -39,16 +40,16 @@ export class SaveChargeController implements ControllerInterface {
         return badRequest(validateSchema.error)
       }
 
-      const { client, payer, creditCard, paymentMethod, totalValue } = input.body
+      const { client, payer, paymentMethod, totalValue } = input.body
 
       const clientId = await this.saveClientUseCase.execute(client)
       const payerId = await this.savePayerUseCase.execute(payer)
 
-      const encryptedCardData = this.encryptData.encrypt(creditCard)
+      const externalIdentifier = await this.getTokenUseCase.execute(config.cache.cardEncryptorKey)
 
       await this.saveCreditCardUseCase.execute({
         payerId,
-        encryptedData: encryptedCardData
+        externalIdentifier
       })
 
       const chargeId = await this.saveChargeUseCase.execute({

@@ -6,7 +6,7 @@ export namespace SaveCreditCardRepositoryInterface {
   export type Input = {
     id: string
     payerId: string
-    encryptedData: string
+    externalIdentifier: string
     createdAt: Date
   }
 }

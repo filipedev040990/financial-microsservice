@@ -11,7 +11,7 @@ export class SaveCreditCardUseCase implements SaveCreditCardUseCaseInterface {
   async execute (input: SaveCreditCardUseCaseInterface.Input): Promise<void> {
     await this.repository.save({
       id: this.uuidGenerator.generate(),
-      encryptedData: input.encryptedData,
+      externalIdentifier: input.externalIdentifier,
       payerId: input.payerId,
       createdAt: new Date()
     })

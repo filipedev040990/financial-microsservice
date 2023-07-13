@@ -19,7 +19,7 @@ describe('SaveCreditCardUseCase', () => {
 
     input = {
       payerId: 'anyPayerId',
-      encryptedData: 'encryptedData'
+      externalIdentifier: 'externalIdentifier'
     }
 
     uuidGenerator.generate.mockReturnValue('anyUUID')
@@ -42,7 +42,7 @@ describe('SaveCreditCardUseCase', () => {
     expect(repository.save).toHaveBeenCalledWith({
       id: 'anyUUID',
       payerId: 'anyPayerId',
-      encryptedData: 'encryptedData',
+      externalIdentifier: 'externalIdentifier',
       createdAt: new Date()
 
     })

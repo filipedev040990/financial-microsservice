@@ -5,6 +5,6 @@ export interface SaveCreditCardUseCaseInterface {
 export namespace SaveCreditCardUseCaseInterface {
   export type Input = {
     payerId: string
-    encryptedData: string
+    externalIdentifier: string
   }
 }
