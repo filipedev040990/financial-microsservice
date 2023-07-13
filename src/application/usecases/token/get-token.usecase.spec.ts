@@ -18,6 +18,8 @@ describe('GetTokenUseCase', () => {
     key = 'anyKey'
 
     sut = new GetTokenUseCase(credentials, cache)
+
+    cache.get.mockReturnValue('anyToken')
   })
 
   test('should call Cache.get once and with correct key', async () => {
@@ -25,5 +27,11 @@ describe('GetTokenUseCase', () => {
 
     expect(cache.get).toHaveBeenCalledTimes(1)
     expect(cache.get).toHaveBeenCalledWith('anyKey')
+  })
+
+  test('should return the value of cache', async () => {
+    const output = await sut.execute(key)
+
+    expect(output).toBe('anyToken')
   })
 })

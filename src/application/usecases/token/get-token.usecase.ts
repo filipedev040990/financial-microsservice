@@ -13,7 +13,7 @@ export class GetTokenUseCase implements GetTokenInterfaceUseCase {
   ) {}
 
   async execute (key: string): Promise<string> {
-    this.cache.get(key)
-    return ''
+    const cacheToken = this.cache.get(key)
+    return cacheToken
   }
 }
