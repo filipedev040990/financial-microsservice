@@ -10,3 +10,7 @@ export namespace SaveCreditCardRepositoryInterface {
     createdAt: Date
   }
 }
+
+export interface DeleteCreditCardRepositoryInterface {
+  delete (externalIdentifier: string): Promise<void>
+}

@@ -2,12 +2,17 @@ import { QueueInterface } from '@/application/contratcs/queue'
 import { UpdateChargeStatusUseCaseInterface } from '@/application/contratcs/update-charge-status-usecase.interface'
 import constants from '../constants'
 import { GetChargeByIdUseCaseInterface } from '@/application/contratcs/get-charge-by-id-usecase.interface'
+import { GetTokenInterfaceUseCase } from '@/application/contratcs/get-token-api.interface'
+import { config } from '../config'
+import { DeleteCardInterface } from '@/application/contratcs/delete-card.interface'
 
 export class ConsumePaymentProcessedQueue {
   constructor (
     private readonly queue: QueueInterface,
     private readonly getChargeById: GetChargeByIdUseCaseInterface,
-    private readonly updateChargeStatusUseCase: UpdateChargeStatusUseCaseInterface
+    private readonly updateChargeStatusUseCase: UpdateChargeStatusUseCaseInterface,
+    private readonly getTokenUseCase: GetTokenInterfaceUseCase,
+    private readonly deleteCardUseCase: DeleteCardInterface
   ) {}
 
   async execute (): Promise<void> {
@@ -43,6 +48,10 @@ export class ConsumePaymentProcessedQueue {
           id: charge.id,
           status: newStatus
         })
+
+        const token = await this.getTokenUseCase.execute(config.cache.cardEncryptorKey)
+
+        await this.deleteCardUseCase.execute(response.card.externalIdentifier, token)
       }
     })
   }
