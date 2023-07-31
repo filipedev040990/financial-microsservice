@@ -4,7 +4,7 @@ import constants from '../constants'
 import { GetChargeByIdUseCaseInterface } from '@/application/contratcs/get-charge-by-id-usecase.interface'
 import { GetTokenInterfaceUseCase } from '@/application/contratcs/get-token-api.interface'
 import { config } from '../config'
-import { DeleteCardInterface } from '@/application/contratcs/delete-card.interface'
+import { DeleteCardExternal } from '@/application/usecases/credit-card/delete-external.usecase'
 
 export class ConsumePaymentProcessedQueue {
   constructor (
@@ -12,7 +12,7 @@ export class ConsumePaymentProcessedQueue {
     private readonly getChargeById: GetChargeByIdUseCaseInterface,
     private readonly updateChargeStatusUseCase: UpdateChargeStatusUseCaseInterface,
     private readonly getTokenUseCase: GetTokenInterfaceUseCase,
-    private readonly deleteCardUseCase: DeleteCardInterface
+    private readonly deleteCardExternalUseCase: DeleteCardExternal
   ) {}
 
   async execute (): Promise<void> {
@@ -51,7 +51,9 @@ export class ConsumePaymentProcessedQueue {
 
         const token = await this.getTokenUseCase.execute(config.cache.cardEncryptorKey)
 
-        await this.deleteCardUseCase.execute(response.card.externalIdentifier, token)
+        if (newStatus === constants.CHARGE_STATUS_PAID || newStatus === constants.CHARGE_STATUS_UNPAID) {
+          await this.deleteCardExternalUseCase.execute(response.creditCard.externalIdentifier, token)
+        }
       }
     })
   }
